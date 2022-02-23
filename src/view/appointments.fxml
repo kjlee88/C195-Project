@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="1136.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Appointment">
+<AnchorPane prefHeight="500.0" prefWidth="1136.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Appointments">
     <children>
         <TextField layoutX="510.0" layoutY="455.0" prefHeight="25.0" prefWidth="242.0" promptText="search by Appointment ID or Customer ID" />
       <TabPane layoutX="18.0" layoutY="14.0" prefHeight="438.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE">

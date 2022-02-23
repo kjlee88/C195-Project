@@ -11,7 +11,7 @@ public class Main extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
         primaryStage.setTitle("Scheduler");
         primaryStage.setScene(new Scene(root, 1160, 500));
         primaryStage.show();
