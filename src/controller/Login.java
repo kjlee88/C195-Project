@@ -7,11 +7,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import util.JDBC;
+import util.Time_Date;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 import javafx.event.ActionEvent;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -28,13 +32,13 @@ public class Login implements Initializable {
     @FXML
     private PasswordField passwordInput;
     @FXML
-    private TextField userNameInput;
+    private TextField usernameInput;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
             rb = ResourceBundle.getBundle("Properties.login", Locale.getDefault());
-            userNameInput.setPromptText(rb.getString("userName"));
+            usernameInput.setPromptText(rb.getString("username"));
             passwordInput.setPromptText(rb.getString("password"));
         } catch (MissingResourceException e) {
             System.out.println("Missing resource");
@@ -42,10 +46,10 @@ public class Login implements Initializable {
 
     }
 
-    private int getUserID(String userName) throws SQLException {
+    private int getUserID(String username) throws SQLException {
         int userID = -1;
         Statement stmt = JDBC.connection.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT user_ID FROM users WHERE user_name = '" + userName + "'");
+        ResultSet rs = stmt.executeQuery("SELECT user_ID FROM users WHERE user_name = '" + username + "'");
         while (rs.next()) {
             userID = rs.getInt("user_ID");
         }
@@ -64,18 +68,22 @@ public class Login implements Initializable {
 
     @FXML
     private void login(ActionEvent event) throws SQLException, IOException {
-        String userName = userNameInput.getText();
-        int userID = getUserID(userName);
+        String username = usernameInput.getText();
+        int userID = getUserID(username);
         String passwordDB = getPassword(userID);
         String password = passwordInput.getText();
 
         if (password.equals(passwordDB)) {
+            String attempt = "successful.";
+            logger(username, attempt);
             Parent root = FXMLLoader.load(getClass().getResource("/view/menu.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         } else {
+            String attempt = "denied.";
+            logger(username, attempt);
             Alert a = new Alert(Alert.AlertType.INFORMATION);
             a.setTitle("Error");
             a.setHeaderText("Login unsuccessful");
@@ -84,6 +92,17 @@ public class Login implements Initializable {
         }
     }
 
+    public void logger(String username, String attempt) {
+        try {
+            String fileName = "login_activity";
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+            writer.append(Time_Date.getTimeStamp() + " User " + username + " login attempt was " + attempt + "\n");
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
 
 };
 

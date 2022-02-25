@@ -9,7 +9,7 @@ import java.time.ZoneId;
  *
  * @author Jason Trowbridge
  */
-public class Localize {
+public class Time_Date {
 
     public static java.sql.Timestamp getTimeStamp() {
         ZoneId zoneid = ZoneId.of("UTC");

@@ -11,7 +11,7 @@
    <children>
       <Button fx:id="login" layoutX="234.0" layoutY="160.0" mnemonicParsing="false" text="Login" onAction="#login" />
       <PasswordField fx:id="passwordInput" layoutX="98.0" layoutY="111.0" />
-      <TextField fx:id="userNameInput" layoutX="98.0" layoutY="65.0" />
+      <TextField fx:id="usernameInput" layoutX="98.0" layoutY="65.0" />
       <Label layoutX="29.0" layoutY="70.0" text="User ID:" />
       <Label layoutX="29.0" layoutY="116.0" text="Password:" />
       <Label layoutX="77.0" layoutY="24.0" text="Log in to use the Scheduler" />
