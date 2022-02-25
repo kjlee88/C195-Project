@@ -1,10 +1,69 @@
 package controller;
 
-public class Login {
+import javafx.scene.Parent;
+import javafx.stage.Stage;
+import util.JDBC;
 
-/** text field id and password is saved to string variable. Search ID against sql database to find linked password, save it to another variable.
-User input password is checked against saved variable. Successful attempt triggers message "Login successful" and calls the Menu screen.
-When ID is not found, msg "ID not found". When ID is found but password is wrong, msg "Incorrect password". Each login attempt logs. **/
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+
+import javafx.event.ActionEvent;
+import java.io.IOException;
+import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+public class Login implements Initializable {
+    @FXML
+    private Button login;
+    @FXML
+    private PasswordField password;
+    @FXML
+    private TextField userNameTf;
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        try {
+            rb = ResourceBundle.getBundle("Properties.login", Locale.getDefault());
+            userNameTf.setPromptText(rb.getString("userName"));
+        } catch (MissingResourceException e) {
+            System.out.println("Missing resource");
+        }
+
+    }
+
+    private int getUserID(String userName) throws SQLException {
+        int userID = -1;
+        Statement stmt = JDBC.connection.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT userID FROM user WHERE userName = '" + userName + "'");
+        while (rs.next()) {
+            userID = rs.getInt("userID");
+        }
+        return userID;
+    }
+
+    private String getPassword(String userID) throws SQLException {
+        String password = " ";
+        Statement stmt = JDBC.connection.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT password FROM user WHERE userID = '" + userID + "'");
+        return password;
+    }
+
+    @FXML
+    private void LoginButtonAction(ActionEvent event) throws SQLException, IOException {
+        String userName = userNameTf.getText();
+        int userId = getUserID(userName);
+        Parent root;
+        Stage stage;
+    }
 
 
-}
+};
+
