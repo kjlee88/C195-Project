@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import util.JDBC;
-import util.Time_Date;
+import util.ZoneInfo;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,6 +21,7 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.ZoneId;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Optional;
@@ -28,14 +29,19 @@ import java.util.ResourceBundle;
 
 public class Login implements Initializable {
     @FXML
+    private Label zoneInfo;
+    @FXML
     private Button login;
     @FXML
     private PasswordField passwordInput;
     @FXML
     private TextField usernameInput;
+    private ZoneId userZoneID = ZoneId.systemDefault();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        System.out.println(userZoneID);
+        zoneInfo.setText(String.valueOf(userZoneID));
         try {
             rb = ResourceBundle.getBundle("Properties.login", Locale.getDefault());
             usernameInput.setPromptText(rb.getString("username"));
@@ -47,7 +53,7 @@ public class Login implements Initializable {
     }
 
     private int getUserID(String username) throws SQLException {
-        int userID = -1;
+        int userID = 0;
         Statement stmt = JDBC.connection.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT user_ID FROM users WHERE user_name = '" + username + "'");
         while (rs.next()) {
@@ -96,7 +102,7 @@ public class Login implements Initializable {
         try {
             String fileName = "login_activity";
             BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
-            writer.append(Time_Date.getTimeStamp() + " User " + username + " login attempt was " + attempt + "\n");
+            writer.append(ZoneInfo.getTimeStamp() + " User " + username + " login attempt was " + attempt + "\n");
             writer.flush();
             writer.close();
         } catch (IOException e) {
