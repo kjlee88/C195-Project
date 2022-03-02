@@ -2,7 +2,9 @@ package DAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import model.Country;
 import model.Customer;
+import model.State;
 import util.JDBC;
 import util.ZoneInfo;
 
@@ -12,7 +14,7 @@ public class CustomerDAO {
     public static ObservableList<Customer> getAllCustomers() {
         ObservableList<Customer> customerList = FXCollections.observableArrayList();
         try {
-            String SQL = "SELECT customers.Customer_ID, customers.Customer_Name, customers.Address, customers.Postal_Code, customers.Phone, countries.Country, first_level_divisions.Division" + "\n" + "FROM customers" + "\n" + "LEFT JOIN first_level_divisions ON customers.Division_ID=first_level_divisions.Division_ID" + "\n" + "LEFT JOIN countries ON first_level_divisions.Country_ID=countries.Country_ID";
+            String SQL = "SELECT customers.Customer_ID, customers.Customer_Name, customers.Address, customers.Postal_Code, customers.Phone, countries.Country, countries.country_id, first_level_divisions.Division, customers.Division_ID" + "\n" + "FROM customers" + "\n" + "LEFT JOIN first_level_divisions ON customers.Division_ID=first_level_divisions.Division_ID" + "\n" + "LEFT JOIN countries ON first_level_divisions.Country_ID=countries.Country_ID";
             PreparedStatement ps = JDBC.connection.prepareStatement(SQL);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -21,9 +23,11 @@ public class CustomerDAO {
                 String address = rs.getString("Address");
                 String postal = rs.getString("Postal_Code");
                 String phone = rs.getString("Phone");
-                String countryName = rs.getString("Country");
+                String country = rs.getString("Country");
+                int countryID = rs.getInt("country_id");
                 String state = rs.getString("Division");
-                Customer customer = new Customer(id, name, address, postal, phone, countryName, state);
+                int stateID = rs.getInt("Division_ID");
+                Customer customer = new Customer(id, name, address, postal, phone, country, countryID, state, stateID);
                 customerList.add(customer);
             }
         }
@@ -79,6 +83,17 @@ public class CustomerDAO {
             stmt.executeUpdate(q);
             System.out.println("Customer was added");
 
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void editCustomer(Integer customer_id, String name, String address, String postal, String phone, String countryName, String state){
+        Timestamp utcTime = ZoneInfo.getTimeStamp();
+        try {
+            Statement stmt = JDBC.connection.createStatement();
+            String q = "UPDATE customers SET customer_Name='" + name + "', address='" + address + "', postal_code='" + postal + "', phone='" + phone + "', Create_date='" + utcTime + "', Created_by='script', Last_update='" + utcTime + "', Last_Updated_By='script', Division_ID=" + findStateID(state) + "' WHERE customer_id" + customer_id;
+            stmt.executeUpdate(q);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

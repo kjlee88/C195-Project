@@ -92,9 +92,18 @@ public class Customers implements Initializable {
 
 
     public void onEdit(ActionEvent actionEvent) {
-
-
+        disableInput(false);
+        Customer customerSelected = (Customer) customerTable.getSelectionModel().getSelectedItem();
+        id.setText(Integer.toString(customerSelected.getId()));
+        nameInput.setText(customerSelected.getName());
+        addressInput.setText(customerSelected.getAddress());
+        postalInput.setText(customerSelected.getPostal());
+        phoneInput.setText(customerSelected.getPhone());
+        countryCombo.setValue(customerSelected.getCountryObject());
+        stateCombo.setValue(customerSelected.getStateObject());
     }
+
+
 
     public void onDel(ActionEvent actionEvent) throws SQLException {
         Customer customerSelected = (Customer) customerTable.getSelectionModel().getSelectedItem();
