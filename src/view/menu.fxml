@@ -7,9 +7,9 @@
 
 <AnchorPane prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Menu">
    <children>
-      <Button layoutX="67.0" layoutY="74.0" mnemonicParsing="false" text="Manage Customer Records" />
-      <Button layoutX="53.0" layoutY="117.0" mnemonicParsing="false" text="View and Manage Appointments" />
-      <Button layoutX="246.0" layoutY="160.0" mnemonicParsing="false" text="Quit" onAction="#onExit" />
+      <Button fx:id="customers"  onAction="#onCustomers" layoutX="67.0" layoutY="74.0" mnemonicParsing="false" text="Manage Customer Records" />
+      <Button fx:id="appointments" onAction="#onAppointments" layoutX="53.0" layoutY="117.0" mnemonicParsing="false" text="View and Manage Appointments" />
+      <Button fx:id="exit" onAction="#onExit" layoutX="246.0" layoutY="160.0" mnemonicParsing="false" text="Quit"  />
       <Label layoutX="34.0" layoutY="1.0" text="Welcome to the Scheduler">
          <font>
             <Font size="21.0" />

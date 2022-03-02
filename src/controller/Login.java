@@ -29,6 +29,12 @@ import java.util.ResourceBundle;
 
 public class Login implements Initializable {
     @FXML
+    private Label password;
+    @FXML
+    private Label instruction;
+    @FXML
+    private Label userID;
+    @FXML
     private Label zoneInfo;
     @FXML
     private Button login;
@@ -36,18 +42,21 @@ public class Login implements Initializable {
     private PasswordField passwordInput;
     @FXML
     private TextField usernameInput;
+    @FXML
     private ZoneId userZoneID = ZoneId.systemDefault();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        System.out.println(userZoneID);
+        // System.out.println(userZoneID);
         zoneInfo.setText(String.valueOf(userZoneID));
         try {
-            rb = ResourceBundle.getBundle("Properties.login", Locale.getDefault());
-            usernameInput.setPromptText(rb.getString("username"));
-            passwordInput.setPromptText(rb.getString("password"));
+            rb = ResourceBundle.getBundle("util.lang", Locale.getDefault());
+            userID.setText(rb.getString("username"));
+            password.setText(rb.getString("password"));
+            instruction.setText(rb.getString("instruction"));
+            login.setText(rb.getString("login"));
         } catch (MissingResourceException e) {
-            System.out.println("Missing resource");
+            System.out.println("Resource file missing or not used");
         }
 
     }

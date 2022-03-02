@@ -4,117 +4,40 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="1136.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Appointments">
+<AnchorPane prefHeight="500.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Appointments">
     <children>
-        <TextField layoutX="510.0" layoutY="455.0" prefHeight="25.0" prefWidth="242.0" promptText="search by Appointment ID or Customer ID" />
-      <TabPane layoutX="18.0" layoutY="14.0" prefHeight="438.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab text="All Appointments">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="360.0" prefWidth="648.0">
-                     <children>
-                          <TableView prefHeight="405.0" prefWidth="734.0">
-                              <columns>
-                                  <TableColumn prefWidth="98.0" text="Appointment_ID" />
-                                  <TableColumn prefWidth="61.0" text="Title" />
-                                  <TableColumn prefWidth="83.0" text="Description" />
-                                  <TableColumn prefWidth="74.0" text="Location" />
-                                  <TableColumn prefWidth="58.0" text="Contact" />
-                                  <TableColumn prefWidth="58.0" text="Type" />
-                                  <TableColumn prefWidth="88.0" text="Start Date/Time" />
-                              <TableColumn prefWidth="88.0" text="End date/Time" />
-                              <TableColumn prefWidth="67.0" text="Customer_ID" />
-                              <TableColumn prefWidth="58.0" text="User_ID" />
-                              </columns>
-                          </TableView>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="Filter by This Month">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView prefHeight="405.0" prefWidth="734.0">
-                           <columns>
-                              <TableColumn prefWidth="98.0" text="Appointment_ID" />
-                              <TableColumn prefWidth="61.0" text="Title" />
-                              <TableColumn prefWidth="83.0" text="Description" />
-                              <TableColumn prefWidth="74.0" text="Location" />
-                              <TableColumn prefWidth="58.0" text="Contact" />
-                              <TableColumn prefWidth="58.0" text="Type" />
-                              <TableColumn prefWidth="88.0" text="Start Date/Time" />
-                              <TableColumn prefWidth="88.0" text="End date/Time" />
-                              <TableColumn prefWidth="67.0" text="Customer_ID" />
-                              <TableColumn prefWidth="58.0" text="User_ID" />
-                           </columns>
-                        </TableView>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-            <Tab text="Filter by This Week">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView prefHeight="405.0" prefWidth="734.0">
-                           <columns>
-                              <TableColumn prefWidth="98.0" text="Appointment_ID" />
-                              <TableColumn prefWidth="61.0" text="Title" />
-                              <TableColumn prefWidth="83.0" text="Description" />
-                              <TableColumn prefWidth="74.0" text="Location" />
-                              <TableColumn prefWidth="58.0" text="Contact" />
-                              <TableColumn prefWidth="58.0" text="Type" />
-                              <TableColumn prefWidth="88.0" text="Start Date/Time" />
-                              <TableColumn prefWidth="88.0" text="End date/Time" />
-                              <TableColumn prefWidth="67.0" text="Customer_ID" />
-                              <TableColumn prefWidth="58.0" text="User_ID" />
-                              <TableColumn prefWidth="98.0" text="Appointment_ID" />
-                              <TableColumn prefWidth="61.0" text="Title" />
-                              <TableColumn prefWidth="83.0" text="Description" />
-                              <TableColumn prefWidth="74.0" text="Location" />
-                              <TableColumn prefWidth="58.0" text="Contact" />
-                              <TableColumn prefWidth="58.0" text="Type" />
-                              <TableColumn prefWidth="88.0" text="Start Date/Time" />
-                              <TableColumn prefWidth="88.0" text="End date/Time" />
-                              <TableColumn prefWidth="67.0" text="Customer_ID" />
-                              <TableColumn prefWidth="58.0" text="User_ID" />
-                              <TableColumn prefWidth="98.0" text="Appointment_ID" />
-                              <TableColumn prefWidth="61.0" text="Title" />
-                              <TableColumn prefWidth="83.0" text="Description" />
-                              <TableColumn prefWidth="74.0" text="Location" />
-                              <TableColumn prefWidth="58.0" text="Contact" />
-                              <TableColumn prefWidth="58.0" text="Type" />
-                              <TableColumn prefWidth="88.0" text="Start Date/Time" />
-                              <TableColumn prefWidth="88.0" text="End date/Time" />
-                              <TableColumn prefWidth="67.0" text="Customer_ID" />
-                              <TableColumn prefWidth="58.0" text="User_ID" />
-                           </columns>
-                        </TableView>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </Tab>
-        </tabs>
-      </TabPane>
-        <Button layoutX="419.0" layoutY="455.0" mnemonicParsing="false" text="Edit" />
-        <Button layoutX="457.0" layoutY="455.0" mnemonicParsing="false" text="Delete" />
-        <Button layoutX="376.0" layoutY="455.0" mnemonicParsing="false" text="New" />
-        <Button layoutX="1022.0" layoutY="461.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Exit to Menu" />
+        <TableView layoutX="18.0" layoutY="42.0" prefHeight="405.0" prefWidth="734.0">
+            <columns>
+                <TableColumn prefWidth="98.0" text="Appointment_ID" />
+                <TableColumn prefWidth="61.0" text="Title" />
+                <TableColumn prefWidth="83.0" text="Description" />
+                <TableColumn prefWidth="74.0" text="Location" />
+                <TableColumn prefWidth="58.0" text="Contact" />
+                <TableColumn prefWidth="58.0" text="Type" />
+                <TableColumn prefWidth="88.0" text="Start Date/Time" />
+            <TableColumn prefWidth="88.0" text="End date/Time" />
+            <TableColumn prefWidth="67.0" text="Customer_ID" />
+            <TableColumn prefWidth="58.0" text="User_ID" />
+            </columns>
+        </TableView>
+        <Button layoutX="72.0" layoutY="455.0" mnemonicParsing="false" text="Edit" />
+        <Button layoutX="121.0" layoutY="455.0" mnemonicParsing="false" text="Delete" />
+        <Button layoutX="18.0" layoutY="455.0" mnemonicParsing="false" text="New" />
+        <Button layoutX="1085.0" layoutY="460.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Exit to Menu" />
         <Label layoutX="873.0" layoutY="19.0" prefHeight="23.0" prefWidth="173.0" text="Manage Appointments">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <AnchorPane layoutX="798.0" layoutY="50.0" prefHeight="405.0" prefWidth="354.0">
+        <AnchorPane layoutX="798.0" layoutY="50.0" prefHeight="405.0" prefWidth="387.0">
             <children>
                 <Label layoutY="14.0" text="Appointment ID">
                     <font>
@@ -159,8 +82,10 @@
                 <TextField layoutX="170.0" layoutY="49.0" prefHeight="25.0" prefWidth="156.0" />
                 <TextField layoutX="170.0" layoutY="83.0" prefHeight="25.0" prefWidth="156.0" />
                 <TextField layoutX="170.0" layoutY="118.0" prefHeight="25.0" prefWidth="156.0" />
+            <ComboBox layoutX="170.0" layoutY="325.0" prefHeight="26.0" prefWidth="156.0" />
                 <ComboBox layoutX="170.0" layoutY="152.0" prefHeight="25.0" prefWidth="156.0" />
-                <Button layoutX="267.0" layoutY="366.0" mnemonicParsing="false" text="Submit" />
+            <Button fx:id="clear" layoutX="265.0" layoutY="365.0" mnemonicParsing="false" onAction="#onClear" text="Clear" />
+                <Button layoutX="323.0" layoutY="365.0" mnemonicParsing="false" text="Submit" />
             <Label layoutY="259.0" text="End Date and Time">
                <font>
                   <Font size="18.0" />
@@ -171,19 +96,24 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <TextField layoutX="170.0" layoutY="293.0" prefHeight="25.0" prefWidth="156.0" />
             <Label layoutY="326.0" text="User ID">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <TextField layoutX="170.0" layoutY="327.0" prefHeight="25.0" prefWidth="156.0" />
             <TextField layoutX="170.0" layoutY="187.0" prefHeight="25.0" prefWidth="156.0" />
-            <DatePicker layoutX="170.0" layoutY="221.0" prefHeight="25.0" prefWidth="100.0" />
-            <DatePicker layoutX="170.0" layoutY="258.0" prefHeight="25.0" prefWidth="100.0" />
-            <ComboBox layoutX="273.0" layoutY="221.0" prefHeight="25.0" prefWidth="54.0" />
-            <ComboBox layoutX="273.0" layoutY="258.0" prefHeight="25.0" prefWidth="54.0" />
+            <DatePicker layoutX="170.0" layoutY="221.0" prefHeight="26.0" prefWidth="118.0" />
+            <DatePicker layoutX="170.0" layoutY="258.0" prefHeight="26.0" prefWidth="118.0" />
+            <ComboBox layoutX="301.0" layoutY="221.0" prefHeight="26.0" prefWidth="78.0" />
+            <ComboBox layoutX="301.0" layoutY="258.0" prefHeight="26.0" prefWidth="78.0" />
+            <ComboBox layoutX="170.0" layoutY="291.0" prefHeight="26.0" prefWidth="156.0" />
             </children>
         </AnchorPane>
+      <RadioButton fx:id="monthly" layoutX="18.0" layoutY="22.0" mnemonicParsing="false" onAction="#onMonthly" selected="true" text="This Month">
+         <toggleGroup>
+            <ToggleGroup fx:id="scheduleView" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="weekly" layoutX="121.0" layoutY="22.0" mnemonicParsing="false" onAction="#onWeekly" text="This Week" toggleGroup="$scheduleView" />
     </children>
 </AnchorPane>
