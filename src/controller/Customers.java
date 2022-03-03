@@ -33,6 +33,8 @@ import java.util.ResourceBundle;
 
 public class Customers implements Initializable {
     @FXML
+    private Button edit;
+    @FXML
     private Button clear;
     @FXML
     private TableColumn idCol;
@@ -110,6 +112,7 @@ public class Customers implements Initializable {
         int customer_id = customerSelected.getId();
         CustomerDAO.delCustomer(customer_id);
         refreshCustomerList();
+        onClear();
     }
 
     /**
@@ -128,8 +131,6 @@ public class Customers implements Initializable {
     }
 
 
-    public void onState(ActionEvent actionEvent) {
-    }
 
     /**
      *
@@ -142,7 +143,12 @@ public class Customers implements Initializable {
         String phone = phoneInput.getText();
         String country = countryCombo.getValue().toString();
         String state = stateCombo.getValue().toString();
-        CustomerDAO.addCustomer(name, address, postal, phone, country, state);
+        if (id.getText().isEmpty()) {
+            CustomerDAO.addCustomer(name, address, postal, phone, country, state);
+        } else {
+            int customer_ID = Integer.parseInt(id.getText());
+            CustomerDAO.editCustomer(customer_ID, name, address, postal, phone, country, state);
+        }
         refreshCustomerList();
         onClear();
 

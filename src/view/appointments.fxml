@@ -14,24 +14,24 @@
 
 <AnchorPane prefHeight="500.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Appointments">
     <children>
-        <TableView layoutX="18.0" layoutY="42.0" prefHeight="405.0" prefWidth="734.0">
+        <TableView fx:id="appointmentTable" layoutX="18.0" layoutY="42.0" prefHeight="405.0" prefWidth="734.0">
             <columns>
-                <TableColumn prefWidth="98.0" text="Appointment_ID" />
-                <TableColumn prefWidth="61.0" text="Title" />
-                <TableColumn prefWidth="83.0" text="Description" />
-                <TableColumn prefWidth="74.0" text="Location" />
-                <TableColumn prefWidth="58.0" text="Contact" />
-                <TableColumn prefWidth="58.0" text="Type" />
-                <TableColumn prefWidth="88.0" text="Start Date/Time" />
-            <TableColumn prefWidth="88.0" text="End date/Time" />
-            <TableColumn prefWidth="67.0" text="Customer_ID" />
-            <TableColumn prefWidth="58.0" text="User_ID" />
+                <TableColumn fx:id="appointIdCol" prefWidth="98.0" text="Appointment_ID" />
+                <TableColumn fx:id="titleCol" prefWidth="61.0" text="Title" />
+                <TableColumn fx:id="descriptionCol" prefWidth="83.0" text="Description" />
+                <TableColumn fx:id="locationCol" prefWidth="74.0" text="Location" />
+                <TableColumn fx:id="contactCol" prefWidth="58.0" text="Contact" />
+                <TableColumn fx:id="typeCol" prefWidth="58.0" text="Type" />
+                <TableColumn fx:id="startTimeCol" prefWidth="88.0" text="Start Date/Time" />
+            <TableColumn fx:id="endTimeCol" prefWidth="88.0" text="End date/Time" />
+            <TableColumn fx:id="customerIdCol" prefWidth="67.0" text="Customer_ID" />
+            <TableColumn fx:id="userIdCol" prefWidth="58.0" text="User_ID" />
             </columns>
         </TableView>
-        <Button layoutX="72.0" layoutY="455.0" mnemonicParsing="false" text="Edit" />
-        <Button layoutX="121.0" layoutY="455.0" mnemonicParsing="false" text="Delete" />
-        <Button layoutX="18.0" layoutY="455.0" mnemonicParsing="false" text="New" />
-        <Button layoutX="1085.0" layoutY="460.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Exit to Menu" />
+        <Button fx:id="editButton" layoutX="72.0" layoutY="455.0" mnemonicParsing="false" onAction="#onEditButton" text="Edit" />
+        <Button fx:id="delButton" layoutX="121.0" layoutY="455.0" mnemonicParsing="false" onAction="#onDelButton" text="Delete" />
+        <Button fx:id="newButton" layoutX="18.0" layoutY="455.0" mnemonicParsing="false" onAction="#onNewButton" text="New" />
+        <Button fx:id="exit" layoutX="1085.0" layoutY="460.0" mnemonicParsing="false" onAction="#onExit" prefHeight="25.0" prefWidth="100.0" text="Exit to Menu" />
         <Label layoutX="873.0" layoutY="19.0" prefHeight="23.0" prefWidth="173.0" text="Manage Appointments">
             <font>
                 <Font name="System Bold" size="18.0" />
@@ -74,18 +74,18 @@
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <TextField disable="true" editable="false" layoutX="170.0" layoutY="15.0" prefHeight="25.0" prefWidth="156.0" promptText="Auto Gen- Disabled">
+                <TextField fx:id="appointId" disable="true" editable="false" layoutX="170.0" layoutY="15.0" prefHeight="25.0" prefWidth="156.0" promptText="Auto Gen- Disabled">
                     <font>
                         <Font name="Verdana Italic" size="13.0" />
                     </font>
                 </TextField>
-                <TextField layoutX="170.0" layoutY="49.0" prefHeight="25.0" prefWidth="156.0" />
-                <TextField layoutX="170.0" layoutY="83.0" prefHeight="25.0" prefWidth="156.0" />
-                <TextField layoutX="170.0" layoutY="118.0" prefHeight="25.0" prefWidth="156.0" />
-            <ComboBox layoutX="170.0" layoutY="325.0" prefHeight="26.0" prefWidth="156.0" />
-                <ComboBox layoutX="170.0" layoutY="152.0" prefHeight="25.0" prefWidth="156.0" />
+                <TextField fx:id="titleInput" layoutX="170.0" layoutY="49.0" prefHeight="25.0" prefWidth="156.0" />
+                <TextField fx:id="descriptionInput" layoutX="170.0" layoutY="83.0" prefHeight="25.0" prefWidth="156.0" />
+                <TextField fx:id="locationInput" layoutX="170.0" layoutY="118.0" prefHeight="25.0" prefWidth="156.0" />
+            <ComboBox fx:id="userIdComboBox" layoutX="170.0" layoutY="325.0" prefHeight="26.0" prefWidth="156.0" />
+                <ComboBox fx:id="contactComboBox" layoutX="170.0" layoutY="152.0" prefHeight="25.0" prefWidth="156.0" />
             <Button fx:id="clear" layoutX="265.0" layoutY="365.0" mnemonicParsing="false" onAction="#onClear" text="Clear" />
-                <Button layoutX="323.0" layoutY="365.0" mnemonicParsing="false" text="Submit" />
+                <Button fx:id="submit" layoutX="323.0" layoutY="365.0" mnemonicParsing="false" onAction="#onSubmit" text="Submit" />
             <Label layoutY="259.0" text="End Date and Time">
                <font>
                   <Font size="18.0" />
@@ -101,12 +101,12 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <TextField layoutX="170.0" layoutY="187.0" prefHeight="25.0" prefWidth="156.0" />
-            <DatePicker layoutX="170.0" layoutY="221.0" prefHeight="26.0" prefWidth="118.0" />
-            <DatePicker layoutX="170.0" layoutY="258.0" prefHeight="26.0" prefWidth="118.0" />
-            <ComboBox layoutX="301.0" layoutY="221.0" prefHeight="26.0" prefWidth="78.0" />
-            <ComboBox layoutX="301.0" layoutY="258.0" prefHeight="26.0" prefWidth="78.0" />
-            <ComboBox layoutX="170.0" layoutY="291.0" prefHeight="26.0" prefWidth="156.0" />
+            <TextField fx:id="typeInput" layoutX="170.0" layoutY="187.0" prefHeight="25.0" prefWidth="156.0" />
+            <DatePicker fx:id="startDatePicker" layoutX="170.0" layoutY="221.0" prefHeight="26.0" prefWidth="118.0" />
+            <DatePicker fx:id="endDatePicker" layoutX="170.0" layoutY="258.0" prefHeight="26.0" prefWidth="118.0" />
+            <ComboBox fx:id="startTimeComboBox" layoutX="301.0" layoutY="221.0" prefHeight="26.0" prefWidth="78.0" />
+            <ComboBox fx:id="endTimeComboBox" layoutX="301.0" layoutY="258.0" prefHeight="26.0" prefWidth="78.0" />
+            <ComboBox fx:id="customerIdComboBox" layoutX="170.0" layoutY="291.0" prefHeight="26.0" prefWidth="156.0" />
             </children>
         </AnchorPane>
       <RadioButton fx:id="monthly" layoutX="18.0" layoutY="22.0" mnemonicParsing="false" onAction="#onMonthly" selected="true" text="This Month">

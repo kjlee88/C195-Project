@@ -74,7 +74,7 @@ public class CustomerDAO {
 
 
 
-    public static void addCustomer(String name, String address, String postal, String phone, String countryName, String state) {
+    public static void addCustomer(String name, String address, String postal, String phone, String country, String state) {
         Integer customer_ID = assignCustomerID();
         Timestamp utcTime = ZoneInfo.getTimeStamp();
         try {
@@ -88,11 +88,11 @@ public class CustomerDAO {
         }
     }
 
-    public static void editCustomer(Integer customer_id, String name, String address, String postal, String phone, String countryName, String state){
+    public static void editCustomer(Integer customer_id, String name, String address, String postal, String phone, String country, String state){
         Timestamp utcTime = ZoneInfo.getTimeStamp();
         try {
             Statement stmt = JDBC.connection.createStatement();
-            String q = "UPDATE customers SET customer_Name='" + name + "', address='" + address + "', postal_code='" + postal + "', phone='" + phone + "', Create_date='" + utcTime + "', Created_by='script', Last_update='" + utcTime + "', Last_Updated_By='script', Division_ID=" + findStateID(state) + "' WHERE customer_id" + customer_id;
+            String q = "UPDATE customers SET customer_Name='" + name + "', address='" + address + "', postal_code='" + postal + "', phone='" + phone + "', Create_date='" + utcTime + "', Created_by='script', Last_update='" + utcTime + "', Last_Updated_By='script', Division_ID=" + findStateID(state) + " WHERE customer_id=" + customer_id;
             stmt.executeUpdate(q);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
