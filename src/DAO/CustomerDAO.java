@@ -111,6 +111,21 @@ public class CustomerDAO {
 
     }
 
+    public static ObservableList<Integer> getCustomerID() {
+        ObservableList<Integer> customerIdList = FXCollections.observableArrayList();
+        try {
+            String q = "SELECT customer_id from customers";
+            PreparedStatement ps = JDBC.connection.prepareStatement(q);
+            ResultSet rs = ps.executeQuery(q);
+            while (rs.next()) {
+                int customer_id = rs.getInt("Customer_Id");
+                customerIdList.add(customer_id);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return customerIdList;
+    }
 
 }
 

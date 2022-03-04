@@ -11,9 +11,6 @@ public class Customer {
     private int countryID;
     private int stateID;
 
-    public Customer() {
-
-    }
 
     public Customer(int id, String name, String address, String postal, String phone, String country, int countryID, String state, int stateID) {
         this.id = id;

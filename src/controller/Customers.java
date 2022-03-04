@@ -69,7 +69,7 @@ public class Customers implements Initializable {
     @FXML
     private TextField id;
 
-    public ObservableList<Customer> customerList = FXCollections.observableArrayList();
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

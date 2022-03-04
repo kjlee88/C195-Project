@@ -21,11 +21,12 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.ZoneId;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.util.*;
 
 public class Login implements Initializable {
     @FXML
@@ -47,7 +48,7 @@ public class Login implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // System.out.println(userZoneID);
+        System.out.println(userZoneID);
         zoneInfo.setText(String.valueOf(userZoneID));
         try {
             rb = ResourceBundle.getBundle("util.lang", Locale.getDefault());
@@ -57,10 +58,38 @@ public class Login implements Initializable {
             login.setText(rb.getString("login"));
         } catch (MissingResourceException e) {
             System.out.println("Resource file missing or not used");
+            //LocalTime time = LocalTime.of(8,0);
+            //time = time.plusMinutes(30);
+           // System.out.println(time);
+            //TimeZone tz = TimeZone.getTimeZone("America/Los_angeles");
+            DateFormat dateFormatUTC = new SimpleDateFormat("HH:mm");
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            String time = "13:00";
+            dateFormat.setTimeZone(TimeZone.getTimeZone("America/Los_angeles"));
+            try {
+                Date dateInUTC = dateFormat.parse(time);
+                String dateInEST = dateFormatUTC.format(dateInUTC);
+                System.out.println(dateInEST);
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
+
+            //Time timeInPDT = timeFormat.parse("00:00");
+            //time.format(timeInPDT);
+            //OffsetTime odt = OffsetTime.of(00,00,0,0,ZoneId.of("America/New_York"));
+            //System.out.println(odt);
+
         }
 
     }
 
+    public void produceError(URL url, ResourceBundle rb) {
+        zoneInfo.setText(String.valueOf(userZoneID));
+        try {
+            rb = ResourceBundle.getBundle("util.lang", Locale.getDefault());
+            userID.setText(rb.getString("username"));
+        } catch (MissingResourceException e) {}
+    }
     private int getUserID(String username) throws SQLException {
         int userID = 0;
         Statement stmt = JDBC.connection.createStatement();
@@ -117,6 +146,7 @@ public class Login implements Initializable {
         } catch (IOException e) {
             System.out.println(e);
         }
+
     }
 
 };
