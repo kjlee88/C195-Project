@@ -19,7 +19,9 @@ import model.Customer;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
+import java.time.ZoneId;
 import java.util.ResourceBundle;
+
 
 public class Appointments implements Initializable {
     @FXML
@@ -87,15 +89,14 @@ public class Appointments implements Initializable {
     @FXML
     public ComboBox customerIdComboBox;
 
+
+
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    public void initialize (URL url, ResourceBundle rb) {
         customerIdComboBox.setItems(CustomerDAO.getCustomerID());
-        try {
-            AppointmentDAO.availableTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        //startTimeComboBox.setItems(AppointmentDAO.availableTime());
+
+        startTimeComboBox.setItems(AppointmentDAO.availableTime());
+
         refreshAppointmentList();
     }
 

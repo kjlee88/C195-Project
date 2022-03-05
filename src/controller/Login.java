@@ -43,8 +43,7 @@ public class Login implements Initializable {
     private PasswordField passwordInput;
     @FXML
     private TextField usernameInput;
-    @FXML
-    private ZoneId userZoneID = ZoneId.systemDefault();
+    public static ZoneId userZoneID = ZoneId.systemDefault();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -58,27 +57,6 @@ public class Login implements Initializable {
             login.setText(rb.getString("login"));
         } catch (MissingResourceException e) {
             System.out.println("Resource file missing or not used");
-            //LocalTime time = LocalTime.of(8,0);
-            //time = time.plusMinutes(30);
-           // System.out.println(time);
-            //TimeZone tz = TimeZone.getTimeZone("America/Los_angeles");
-            DateFormat dateFormatUTC = new SimpleDateFormat("HH:mm");
-            DateFormat dateFormat = new SimpleDateFormat("HH:mm");
-            String time = "13:00";
-            dateFormat.setTimeZone(TimeZone.getTimeZone("America/Los_angeles"));
-            try {
-                Date dateInUTC = dateFormat.parse(time);
-                String dateInEST = dateFormatUTC.format(dateInUTC);
-                System.out.println(dateInEST);
-            } catch (ParseException ex) {
-                ex.printStackTrace();
-            }
-
-            //Time timeInPDT = timeFormat.parse("00:00");
-            //time.format(timeInPDT);
-            //OffsetTime odt = OffsetTime.of(00,00,0,0,ZoneId.of("America/New_York"));
-            //System.out.println(odt);
-
         }
 
     }
