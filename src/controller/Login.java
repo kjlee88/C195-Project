@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import util.JDBC;
-import util.ZoneInfo;
+import util.TimeAndZone;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,10 +21,6 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.*;
 
@@ -118,7 +114,7 @@ public class Login implements Initializable {
         try {
             String fileName = "login_activity";
             BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
-            writer.append(ZoneInfo.getTimeStamp() + " User " + username + " login attempt was " + attempt + "\n");
+            writer.append(TimeAndZone.getTimestamp() + " User " + username + " login attempt was " + attempt + "\n");
             writer.flush();
             writer.close();
         } catch (IOException e) {

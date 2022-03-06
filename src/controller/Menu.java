@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class Menu {
+    public Button reports;
     @FXML
     private Button customers;
     @FXML
@@ -33,7 +34,20 @@ public class Menu {
         stage.show();
     }
 
+
+    public void onReports(ActionEvent actionEvent) throws Exception{
+        Parent root = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+
     public void onExit(ActionEvent actionEvent) {
         System.exit(0);
     }
+
+
 }

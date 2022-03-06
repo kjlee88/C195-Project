@@ -2,11 +2,9 @@ package DAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.Country;
 import model.Customer;
-import model.State;
 import util.JDBC;
-import util.ZoneInfo;
+import util.TimeAndZone;
 
 import java.sql.*;
 
@@ -55,7 +53,7 @@ public class CustomerDAO {
         return customer_ID;
     }
 
-    public static int findStateID(String state) {
+    /* public static int findStateID(String state) {
         int stateID = 0;
         try {
             Statement stmt = JDBC.connection.createStatement();
@@ -70,16 +68,16 @@ public class CustomerDAO {
             throwables.printStackTrace();
         }
         return stateID;
-    }
+    }*/
 
 
 
-    public static void addCustomer(String name, String address, String postal, String phone, String country, String state) {
+    public static void addCustomer(String name, String address, String postal, String phone, int countryID, int stateID) {
         Integer customer_ID = assignCustomerID();
-        Timestamp utcTime = ZoneInfo.getTimeStamp();
+        Timestamp utcTime = TimeAndZone.getTimestamp();
         try {
             Statement stmt = JDBC.connection.createStatement();
-            String q = "INSERT INTO customers SET customer_ID=" + customer_ID + ", customer_Name='" + name + "', address='" + address + "', postal_code='" + postal + "', phone='" + phone + "', Create_date='" + utcTime + "', Created_by='script', Last_update='" + utcTime + "', Last_Updated_By='script', Division_ID=" + findStateID(state);
+            String q = "INSERT INTO customers SET customer_ID=" + customer_ID + ", customer_Name='" + name + "', address='" + address + "', postal_code='" + postal + "', phone='" + phone + "', Create_date='" + utcTime + "', Created_by='script', Last_update='" + utcTime + "', Last_Updated_By='script', Division_ID=" + stateID;
             stmt.executeUpdate(q);
             System.out.println("Customer was added");
 
@@ -88,11 +86,11 @@ public class CustomerDAO {
         }
     }
 
-    public static void editCustomer(Integer customer_id, String name, String address, String postal, String phone, String country, String state){
-        Timestamp utcTime = ZoneInfo.getTimeStamp();
+    public static void editCustomer(Integer customer_id, String name, String address, String postal, String phone, int countryID, int stateID){
+        Timestamp utcTime = TimeAndZone.getTimestamp();
         try {
             Statement stmt = JDBC.connection.createStatement();
-            String q = "UPDATE customers SET customer_Name='" + name + "', address='" + address + "', postal_code='" + postal + "', phone='" + phone + "', Create_date='" + utcTime + "', Created_by='script', Last_update='" + utcTime + "', Last_Updated_By='script', Division_ID=" + findStateID(state) + " WHERE customer_id=" + customer_id;
+            String q = "UPDATE customers SET customer_Name='" + name + "', address='" + address + "', postal_code='" + postal + "', phone='" + phone + "', Last_update='" + utcTime + "', Last_Updated_By='script', Division_ID=" + stateID + " WHERE customer_id=" + customer_id;
             stmt.executeUpdate(q);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -124,6 +122,7 @@ public class CustomerDAO {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        customerIdList = customerIdList.sorted();
         return customerIdList;
     }
 

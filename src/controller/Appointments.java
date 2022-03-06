@@ -1,7 +1,9 @@
 package controller;
 
 import DAO.AppointmentDAO;
+import DAO.ContactDAO;
 import DAO.CustomerDAO;
+import DAO.UserDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,12 +16,23 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+import model.Appointment;
+import model.Contact;
 import model.Customer;
+import model.User;
+import util.TimeAndZone;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 
@@ -71,9 +84,9 @@ public class Appointments implements Initializable {
     @FXML
     private TextField locationInput;
     @FXML
-    private ComboBox userIdComboBox;
+    private ComboBox<Integer> userIdComboBox;
     @FXML
-    private ComboBox contactComboBox;
+    private ComboBox<Contact> contactComboBox;
     @FXML
     private Button submit;
     @FXML
@@ -87,17 +100,21 @@ public class Appointments implements Initializable {
     @FXML
     private ComboBox endTimeComboBox;
     @FXML
-    public ComboBox customerIdComboBox;
+    public ComboBox<Integer> customerIdComboBox;
 
 
 
     @Override
     public void initialize (URL url, ResourceBundle rb) {
         customerIdComboBox.setItems(CustomerDAO.getCustomerID());
-
         startTimeComboBox.setItems(AppointmentDAO.availableTime());
+        endTimeComboBox.setItems(AppointmentDAO.availableTime());
+        userIdComboBox.setItems(UserDAO.getUserID());
+        contactComboBox.setItems(ContactDAO.getAllContacts());
 
+        appointmentTable.setItems(AppointmentDAO.getAllAppointments());
         refreshAppointmentList();
+        disableInput(true);
     }
 
 
@@ -105,31 +122,57 @@ public class Appointments implements Initializable {
 
 
     public void refreshAppointmentList() {
-        appointmentTable.setItems(AppointmentDAO.getAllAppointments());
         appointIdCol.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         locationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
         contactCol.setCellValueFactory(new PropertyValueFactory<>("contactID"));
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        startTimeCol.setCellValueFactory(new PropertyValueFactory<>("startTime"));
-        endTimeCol.setCellValueFactory(new PropertyValueFactory<>("endTime"));
+        startTimeCol.setCellValueFactory(new PropertyValueFactory<>("startTimeLocal"));
+        endTimeCol.setCellValueFactory(new PropertyValueFactory<>("endTimeLocal"));
         customerIdCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         userIdCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
     }
 
 
     public void onMonthly(ActionEvent actionEvent) {
+        appointmentTable.setItems(AppointmentDAO.getAppointmentsThisMonth());
+        refreshAppointmentList();
     }
 
-    public void onWeekly(ActionEvent actionEvent) {
+    public void onWeekly(ActionEvent actionEvent) throws ParseException {
+        appointmentTable.setItems(AppointmentDAO.getAppointmentsThisWeek());
+        refreshAppointmentList();
     }
 
 
     public void onEditButton(ActionEvent actionEvent) {
+        disableInput(false);
+        Appointment appointmentSelected = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+        Pair<LocalDate, String> start = TimeAndZone.timestampToDateAndTime(appointmentSelected.getStartTimeLocal());
+        Pair<LocalDate, String> end = TimeAndZone.timestampToDateAndTime(appointmentSelected.getEndTimeLocal());
+
+        appointId.setText(Integer.toString(appointmentSelected.getAppointmentId()));
+        titleInput.setText(appointmentSelected.getTitle());
+        descriptionInput.setText(appointmentSelected.getDescription());
+        locationInput.setText(appointmentSelected.getLocation());
+        contactComboBox.setValue(appointmentSelected.getContactObject());
+        typeInput.setText(appointmentSelected.getType());
+        startDatePicker.setValue(start.getKey());
+        startTimeComboBox.setValue(start.getValue());
+        endDatePicker.setValue(end.getKey());
+        endTimeComboBox.setValue(end.getValue());
+        customerIdComboBox.setValue(appointmentSelected.getCustomerID());
+        userIdComboBox.setValue(appointmentSelected.getUserID());
+
     }
 
-    public void onDelButton(ActionEvent actionEvent) {
+    public void onDelButton(ActionEvent actionEvent) throws SQLException {
+        Appointment appointmentSelected = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+        int appointment_id = appointmentSelected.getAppointmentId();
+        AppointmentDAO.delAppointment(appointment_id);
+        refreshAppointmentList();
+        onClear();
     }
 
     public void onNewButton(ActionEvent actionEvent) {
@@ -144,12 +187,32 @@ public class Appointments implements Initializable {
         stage.show();
     }
 
-    public void onSubmit(ActionEvent actionEvent) {
+    public void onSubmit(ActionEvent actionEvent) throws ParseException {
+        String title = titleInput.getText();
+        String description = descriptionInput.getText();
+        String location = locationInput.getText();
+        int contactID = contactComboBox.getValue().getContactID();
+        String type = typeInput.getText();
+        String startDate = startDatePicker.getValue().toString();
+        String startTime = startTimeComboBox.getValue().toString();
+        String endDate = endDatePicker.getValue().toString();
+        String endTime = endTimeComboBox.getValue().toString();
+        int customerID = customerIdComboBox.getValue();
+        int userID = userIdComboBox.getValue();
+
+        String startTimeLocal = TimeAndZone.generateUTCTimestamp(startDate,startTime);
+        String endTimeLocal = TimeAndZone.generateUTCTimestamp(endDate,endTime);
+
+        if (appointId.getText().isEmpty()) {
+            AppointmentDAO.addAppointment(title, description, location, type, startTimeLocal, endTimeLocal, customerID, userID, contactID);
+        } else {
+            int appointmentID = Integer.parseInt(appointId.getText());
+            AppointmentDAO.editAppointment(appointmentID, title, description, location, type, startTimeLocal, endTimeLocal, customerID, userID, contactID);
+        }
+        refreshAppointmentList();
+        onClear();
     }
 
-    public void onCustomerIdCombo(ActionEvent actionEvent) {
-
-    }
 
     public void onClear() {
         disableInput(true);
@@ -159,6 +222,9 @@ public class Appointments implements Initializable {
         descriptionInput.setText("");
         locationInput.setText("");
         typeInput.setText("");
+        contactComboBox.setValue(null);
+        customerIdComboBox.setValue(null);
+        userIdComboBox.setValue(null);
     }
 
     public void disableInput(boolean b) {
@@ -174,7 +240,8 @@ public class Appointments implements Initializable {
         endDatePicker.setDisable(b);
         startTimeComboBox.setDisable(b);
         endTimeComboBox.setDisable(b);
-
-
+        customerIdComboBox.setDisable(b);
     }
+
+
 }

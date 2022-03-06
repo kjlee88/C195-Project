@@ -75,11 +75,11 @@ public class Customers implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         countryCombo.setItems(CountryDAO.getAllCountries());
         refreshCustomerList();
-
+        disableInput(true);
     }
 
     public void refreshCustomerList() {
-        customerTable.setItems(CustomerDAO.getAllCustomers());
+        customerTable.setItems(CustomerDAO.getAllCustomers().sorted());
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -126,7 +126,6 @@ public class Customers implements Initializable {
 
     public void onCountryCombo(ActionEvent actionEvent){
         Country c = countryCombo.getValue();
-        System.out.println(c.getCountryID());
         stateCombo.setItems(StateDAO.getAllStates(c.getCountryID()));
     }
 
@@ -141,13 +140,13 @@ public class Customers implements Initializable {
         String address = addressInput.getText();
         String postal = postalInput.getText();
         String phone = phoneInput.getText();
-        String country = countryCombo.getValue().toString();
-        String state = stateCombo.getValue().toString();
+        int countryID = countryCombo.getValue().getCountryID();
+        int stateID = stateCombo.getValue().getStateID();
         if (id.getText().isEmpty()) {
-            CustomerDAO.addCustomer(name, address, postal, phone, country, state);
+            CustomerDAO.addCustomer(name, address, postal, phone, countryID, stateID);
         } else {
             int customer_ID = Integer.parseInt(id.getText());
-            CustomerDAO.editCustomer(customer_ID, name, address, postal, phone, country, state);
+            CustomerDAO.editCustomer(customer_ID, name, address, postal, phone, countryID, stateID);
         }
         refreshCustomerList();
         onClear();
@@ -177,6 +176,8 @@ public class Customers implements Initializable {
         addressInput.setText("");
         postalInput.setText("");
         phoneInput.setText("");
+        countryCombo.setValue(null);
+        stateCombo.setValue(null);
     }
 
     public void disableInput(boolean b) {

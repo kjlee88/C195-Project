@@ -7,14 +7,14 @@
 
 <AnchorPane prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Menu">
    <children>
-      <Button fx:id="customers"  onAction="#onCustomers" layoutX="67.0" layoutY="74.0" mnemonicParsing="false" text="Manage Customer Records" />
-      <Button fx:id="appointments" onAction="#onAppointments" layoutX="53.0" layoutY="117.0" mnemonicParsing="false" text="View and Manage Appointments" />
-      <Button fx:id="exit" onAction="#onExit" layoutX="246.0" layoutY="160.0" mnemonicParsing="false" text="Quit"  />
+      <Button fx:id="customers" layoutX="34.0" layoutY="41.0" mnemonicParsing="false" onAction="#onCustomers" text="Manage Customer Records" />
+      <Button fx:id="appointments" layoutX="34.0" layoutY="87.0" mnemonicParsing="false" onAction="#onAppointments" text="View and Manage Appointments" />
+      <Button fx:id="exit" layoutX="246.0" layoutY="160.0" mnemonicParsing="false" onAction="#onExit" text="Quit" />
+      <Button fx:id="reports" layoutX="34.0" layoutY="134.0" mnemonicParsing="false" onAction="#onReports" text="Reports" />
       <Label layoutX="34.0" layoutY="1.0" text="Welcome to the Scheduler">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <Label layoutX="73.0" layoutY="39.0" text="Select from the menu" />
    </children>
 </AnchorPane>

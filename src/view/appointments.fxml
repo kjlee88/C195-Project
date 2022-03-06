@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Appointments">
+<AnchorPane prefHeight="501.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Appointments">
     <children>
         <TableView fx:id="appointmentTable" layoutX="18.0" layoutY="42.0" prefHeight="405.0" prefWidth="863.0">
             <columns>
@@ -31,13 +31,13 @@
         <Button fx:id="editButton" layoutX="72.0" layoutY="455.0" mnemonicParsing="false" onAction="#onEditButton" text="Edit" />
         <Button fx:id="delButton" layoutX="121.0" layoutY="455.0" mnemonicParsing="false" onAction="#onDelButton" text="Delete" />
         <Button fx:id="newButton" layoutX="18.0" layoutY="455.0" mnemonicParsing="false" onAction="#onNewButton" text="New" />
-        <Button fx:id="exit" layoutX="1191.0" layoutY="455.0" mnemonicParsing="false" onAction="#onExit" prefHeight="25.0" prefWidth="100.0" text="Exit to Menu" />
+        <Button fx:id="exit" layoutX="1174.0" layoutY="455.0" mnemonicParsing="false" onAction="#onExit" prefHeight="25.0" prefWidth="100.0" text="Exit to Menu" />
         <Label layoutX="978.0" layoutY="19.0" prefHeight="23.0" prefWidth="173.0" text="Manage Appointments">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <AnchorPane layoutX="891.0" layoutY="48.0" prefHeight="405.0" prefWidth="387.0">
+        <AnchorPane layoutX="891.0" layoutY="48.0" prefHeight="405.0" prefWidth="402.0">
             <children>
                 <Label layoutY="14.0" text="Appointment ID">
                     <font>
@@ -104,12 +104,12 @@
             <TextField fx:id="typeInput" layoutX="170.0" layoutY="187.0" prefHeight="25.0" prefWidth="156.0" />
             <DatePicker fx:id="startDatePicker" layoutX="170.0" layoutY="221.0" prefHeight="26.0" prefWidth="118.0" />
             <DatePicker fx:id="endDatePicker" layoutX="170.0" layoutY="258.0" prefHeight="26.0" prefWidth="118.0" />
-            <ComboBox fx:id="startTimeComboBox" layoutX="301.0" layoutY="221.0" prefHeight="26.0" prefWidth="78.0" />
-            <ComboBox fx:id="endTimeComboBox" layoutX="301.0" layoutY="258.0" prefHeight="26.0" prefWidth="78.0" />
-            <ComboBox fx:id="customerIdComboBox" layoutX="170.0" layoutY="291.0" onAction="#onCustomerIdCombo" prefHeight="26.0" prefWidth="156.0" />
+            <ComboBox fx:id="startTimeComboBox" layoutX="301.0" layoutY="221.0" prefHeight="26.0" prefWidth="81.0" />
+            <ComboBox fx:id="endTimeComboBox" layoutX="301.0" layoutY="258.0" prefHeight="26.0" prefWidth="81.0" />
+            <ComboBox fx:id="customerIdComboBox" layoutX="170.0" layoutY="291.0" prefHeight="26.0" prefWidth="156.0" />
             </children>
         </AnchorPane>
-      <RadioButton fx:id="monthly" layoutX="18.0" layoutY="22.0" mnemonicParsing="false" onAction="#onMonthly" selected="true" text="This Month">
+      <RadioButton fx:id="monthly" layoutX="18.0" layoutY="22.0" mnemonicParsing="false" onAction="#onMonthly" selected="false" text="This Month" toggleGroup="$scheduleView">
          <toggleGroup>
             <ToggleGroup fx:id="scheduleView" />
          </toggleGroup>
