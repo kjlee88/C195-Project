@@ -4,8 +4,6 @@ import DAO.AppointmentDAO;
 import DAO.ContactDAO;
 import DAO.CustomerDAO;
 import DAO.UserDAO;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,20 +17,13 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.Appointment;
 import model.Contact;
-import model.Customer;
-import model.User;
 import util.TimeAndZone;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 
@@ -101,6 +92,9 @@ public class Appointments implements Initializable {
     private ComboBox endTimeComboBox;
     @FXML
     public ComboBox<Integer> customerIdComboBox;
+    public static boolean validityCheck;
+    public static boolean overlapCheck;
+    public static boolean requiredInputCheck;
 
 
 
@@ -111,8 +105,6 @@ public class Appointments implements Initializable {
         endTimeComboBox.setItems(AppointmentDAO.availableTime());
         userIdComboBox.setItems(UserDAO.getUserID());
         contactComboBox.setItems(ContactDAO.getAllContacts());
-
-        appointmentTable.setItems(AppointmentDAO.getAllAppointments());
         refreshAppointmentList();
         disableInput(true);
     }
@@ -122,6 +114,7 @@ public class Appointments implements Initializable {
 
 
     public void refreshAppointmentList() {
+        appointmentTable.setItems(AppointmentDAO.getAllAppointments());
         appointIdCol.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -171,6 +164,7 @@ public class Appointments implements Initializable {
         Appointment appointmentSelected = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
         int appointment_id = appointmentSelected.getAppointmentId();
         AppointmentDAO.delAppointment(appointment_id);
+        appointmentTable.setItems(AppointmentDAO.getAllAppointments());
         refreshAppointmentList();
         onClear();
     }
@@ -188,29 +182,39 @@ public class Appointments implements Initializable {
     }
 
     public void onSubmit(ActionEvent actionEvent) throws ParseException {
-        String title = titleInput.getText();
-        String description = descriptionInput.getText();
-        String location = locationInput.getText();
-        int contactID = contactComboBox.getValue().getContactID();
-        String type = typeInput.getText();
-        String startDate = startDatePicker.getValue().toString();
-        String startTime = startTimeComboBox.getValue().toString();
-        String endDate = endDatePicker.getValue().toString();
-        String endTime = endTimeComboBox.getValue().toString();
-        int customerID = customerIdComboBox.getValue();
-        int userID = userIdComboBox.getValue();
+        if (requiredInputCheck()) {
+            String title = titleInput.getText();
+            String description = descriptionInput.getText();
+            String location = locationInput.getText();
+            int contactID = contactComboBox.getValue().getContactID();
+            String type = typeInput.getText();
+            String startDate = startDatePicker.getValue().toString();
+            String startTime = startTimeComboBox.getValue().toString();
+            String endDate = endDatePicker.getValue().toString();
+            String endTime = endTimeComboBox.getValue().toString();
+            int customerID = customerIdComboBox.getValue();
+            int userID = userIdComboBox.getValue();
 
-        String startTimeLocal = TimeAndZone.generateUTCTimestamp(startDate,startTime);
-        String endTimeLocal = TimeAndZone.generateUTCTimestamp(endDate,endTime);
+            String startTimeLocal = TimeAndZone.generateUTCTimestamp(startDate, startTime);
+            String endTimeLocal = TimeAndZone.generateUTCTimestamp(endDate, endTime);
 
-        if (appointId.getText().isEmpty()) {
-            AppointmentDAO.addAppointment(title, description, location, type, startTimeLocal, endTimeLocal, customerID, userID, contactID);
-        } else {
-            int appointmentID = Integer.parseInt(appointId.getText());
-            AppointmentDAO.editAppointment(appointmentID, title, description, location, type, startTimeLocal, endTimeLocal, customerID, userID, contactID);
+            validityCheck = AppointmentDAO.appointmentTimeValidityCheck(startTimeLocal, endTimeLocal);
+            overlapCheck = AppointmentDAO.customerOverlapCheck(customerID, startTimeLocal);
+
+            if (validityCheck && overlapCheck && requiredInputCheck) {
+
+                if (appointId.getText().isEmpty()) {
+                    AppointmentDAO.addAppointment(title, description, location, type, startTimeLocal, endTimeLocal, customerID, userID, contactID);
+                } else {
+                    int appointmentID = Integer.parseInt(appointId.getText());
+                    AppointmentDAO.editAppointment(appointmentID, title, description, location, type, startTimeLocal, endTimeLocal, customerID, userID, contactID);
+                }
+
+                appointmentTable.setItems(AppointmentDAO.getAllAppointments());
+                refreshAppointmentList();
+                onClear();
+            }
         }
-        refreshAppointmentList();
-        onClear();
     }
 
 
@@ -225,6 +229,8 @@ public class Appointments implements Initializable {
         contactComboBox.setValue(null);
         customerIdComboBox.setValue(null);
         userIdComboBox.setValue(null);
+        startDatePicker.setValue(null);
+        endDatePicker.setValue(null);
     }
 
     public void disableInput(boolean b) {
@@ -234,8 +240,8 @@ public class Appointments implements Initializable {
         userIdComboBox.setDisable(b);
         contactComboBox.setDisable(b);
         typeInput.setDisable(b);
-        submit.setDisable(b);
         clear.setDisable(b);
+        submit.setDisable(b);
         startDatePicker.setDisable(b);
         endDatePicker.setDisable(b);
         startTimeComboBox.setDisable(b);
@@ -243,5 +249,19 @@ public class Appointments implements Initializable {
         customerIdComboBox.setDisable(b);
     }
 
+
+    private boolean requiredInputCheck() {
+        if (titleInput.getText().isEmpty() || descriptionInput.getText().isEmpty() || locationInput.getText().isEmpty() || contactComboBox.getValue().equals(null) || typeInput.getText().isEmpty() || startDatePicker.getValue().equals(null) || startTimeComboBox.getValue().equals(null) || endDatePicker.getValue().equals(null) || endTimeComboBox.getValue().equals(null) || customerIdComboBox.getValue().equals(null) || userIdComboBox.getValue().equals(null)) {
+            requiredInputCheck = false;
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("");
+            alert.setHeaderText("Missing input field(s) found");
+            alert.setContentText("All fields are required before submitting");
+            alert.showAndWait();
+        } else {
+            requiredInputCheck = true;
+
+        } return requiredInputCheck;
+    }
 
 }

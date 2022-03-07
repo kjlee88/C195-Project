@@ -3,6 +3,7 @@ package controller;
 import DAO.CountryDAO;
 import DAO.CustomerDAO;
 import DAO.StateDAO;
+import DAO.AppointmentDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -68,7 +69,7 @@ public class Customers implements Initializable {
     private Button submit;
     @FXML
     private TextField id;
-
+    private boolean requiredInputCheck;
 
 
     @Override
@@ -110,8 +111,16 @@ public class Customers implements Initializable {
     public void onDel(ActionEvent actionEvent) throws SQLException {
         Customer customerSelected = (Customer) customerTable.getSelectionModel().getSelectedItem();
         int customer_id = customerSelected.getId();
-        CustomerDAO.delCustomer(customer_id);
-        refreshCustomerList();
+        if (AppointmentDAO.associatedAppointment(customer_id).isEmpty()) {
+            CustomerDAO.delCustomer(customer_id);
+            refreshCustomerList();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Customer Delete Error");
+            alert.setHeaderText("Customer has an associated appointments");
+            alert.setContentText("You must delete associated appointments first");
+            alert.showAndWait();
+        }
         onClear();
     }
 
@@ -136,20 +145,23 @@ public class Customers implements Initializable {
      * @param actionEvent Saves a new customer with information provided on the add form.
      */
     public void onSubmit(ActionEvent actionEvent) {
-        String name = nameInput.getText();
-        String address = addressInput.getText();
-        String postal = postalInput.getText();
-        String phone = phoneInput.getText();
-        int countryID = countryCombo.getValue().getCountryID();
-        int stateID = stateCombo.getValue().getStateID();
-        if (id.getText().isEmpty()) {
-            CustomerDAO.addCustomer(name, address, postal, phone, countryID, stateID);
-        } else {
-            int customer_ID = Integer.parseInt(id.getText());
-            CustomerDAO.editCustomer(customer_ID, name, address, postal, phone, countryID, stateID);
+        if (requiredInputCheck()) {
+            String name = nameInput.getText();
+            String address = addressInput.getText();
+            String postal = postalInput.getText();
+            String phone = phoneInput.getText();
+            int countryID = countryCombo.getValue().getCountryID();
+            int stateID = stateCombo.getValue().getStateID();
+            if (id.getText().isEmpty()) {
+                CustomerDAO.addCustomer(name, address, postal, phone, stateID);
+            } else {
+                int customer_ID = Integer.parseInt(id.getText());
+                CustomerDAO.editCustomer(customer_ID, name, address, postal, phone, stateID);
+            }
+            refreshCustomerList();
+
+            onClear();
         }
-        refreshCustomerList();
-        onClear();
 
     }
 
@@ -176,7 +188,6 @@ public class Customers implements Initializable {
         addressInput.setText("");
         postalInput.setText("");
         phoneInput.setText("");
-        countryCombo.setValue(null);
         stateCombo.setValue(null);
     }
 
@@ -190,5 +201,19 @@ public class Customers implements Initializable {
         submit.setDisable(b);
         clear.setDisable(b);
 
+    }
+
+    private boolean requiredInputCheck() {
+        if (nameInput.getText().isEmpty() || addressInput.getText().isEmpty() || postalInput.getText().isEmpty() || phoneInput.getText().isEmpty() || countryCombo.getValue().equals(null) || stateCombo.getValue().equals(null)) {
+            requiredInputCheck = false;
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("");
+            alert.setHeaderText("Missing input field(s) found");
+            alert.setContentText("All fields are required before submitting");
+            alert.showAndWait();
+        } else {
+            requiredInputCheck = true;
+
+        } return requiredInputCheck;
     }
 }

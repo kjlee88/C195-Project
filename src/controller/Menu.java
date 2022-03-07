@@ -1,22 +1,57 @@
 package controller;
 
+import DAO.AppointmentDAO;
+import DAO.UserDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import model.User;
+import util.TimeAndZone;
 
-public class Menu {
+import java.net.URL;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ResourceBundle;
+
+public class Menu implements Initializable {
+
     public Button reports;
+    public TextArea alertDisplay;
     @FXML
     private Button customers;
     @FXML
     private Button appointments;
     @FXML
     private Button exit;
+    public LocalDateTime loginTime;
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        loginTime = LocalDateTime.now();
+        try {
+            String alertList = AppointmentDAO.upcomingAppointments(loginTime, UserDAO.userID);
+            if (alertList.isEmpty()) {
+                alertDisplay.setText("No Upcoming Appointment");
+            } else {
+                alertDisplay.setText(alertList);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void onCustomers(ActionEvent actionEvent) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
@@ -42,7 +77,6 @@ public class Menu {
         stage.setScene(scene);
         stage.show();
     }
-
 
 
     public void onExit(ActionEvent actionEvent) {

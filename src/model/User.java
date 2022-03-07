@@ -9,6 +9,8 @@ public class User {
     public User(int userID, String username) {
         this.userID = userID;
         this.username = username;
+
+        System.out.println("created");
     }
 
 
@@ -20,7 +22,7 @@ public class User {
         User.username = username;
     }
 
-    public int getUserID() {
+    public static int getUserID() {
         return userID;
     }
 

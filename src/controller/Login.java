@@ -1,11 +1,14 @@
 package controller;
 
+import DAO.AppointmentDAO;
+import DAO.UserDAO;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.User;
 import util.JDBC;
 import util.TimeAndZone;
 
@@ -21,10 +24,13 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
 
 public class Login implements Initializable {
+    @FXML
+    private Label loginError;
     @FXML
     private Label password;
     @FXML
@@ -39,7 +45,13 @@ public class Login implements Initializable {
     private PasswordField passwordInput;
     @FXML
     private TextField usernameInput;
+
     public static ZoneId userZoneID = ZoneId.systemDefault();
+    private int verifiedUserID;
+    private String verifiedUserLogin;
+
+
+    ResourceBundle rb = ResourceBundle.getBundle("util.lang",Locale.getDefault());
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -49,7 +61,6 @@ public class Login implements Initializable {
             rb = ResourceBundle.getBundle("util.lang", Locale.getDefault());
             userID.setText(rb.getString("username"));
             password.setText(rb.getString("password"));
-            instruction.setText(rb.getString("instruction"));
             login.setText(rb.getString("login"));
         } catch (MissingResourceException e) {
             System.out.println("Resource file missing or not used");
@@ -57,13 +68,14 @@ public class Login implements Initializable {
 
     }
 
-    public void produceError(URL url, ResourceBundle rb) {
+    /*public void produceError(URL url, ResourceBundle rb) {
         zoneInfo.setText(String.valueOf(userZoneID));
         try {
             rb = ResourceBundle.getBundle("util.lang", Locale.getDefault());
             userID.setText(rb.getString("username"));
         } catch (MissingResourceException e) {}
-    }
+    }*/
+
     private int getUserID(String username) throws SQLException {
         int userID = 0;
         Statement stmt = JDBC.connection.createStatement();
@@ -87,11 +99,10 @@ public class Login implements Initializable {
     @FXML
     private void login(ActionEvent event) throws SQLException, IOException {
         String username = usernameInput.getText();
-        int userID = getUserID(username);
-        String passwordDB = getPassword(userID);
-        String password = passwordInput.getText();
+        String pass = passwordInput.getText();
 
-        if (password.equals(passwordDB)) {
+        if (UserDAO.verifyUserLogin(username,pass)){
+            User currentUser = new User(getUserID(username),username);
             String attempt = "successful.";
             logger(username, attempt);
             Parent root = FXMLLoader.load(getClass().getResource("/view/menu.fxml"));
@@ -99,16 +110,10 @@ public class Login implements Initializable {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
-        } else {
-            String attempt = "denied.";
-            logger(username, attempt);
-            Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setTitle("Error");
-            a.setHeaderText("Login unsuccessful");
-            a.setContentText("Incorrect Username and/or Password");
-            Optional<ButtonType> result = a.showAndWait();
         }
-    }
+            loginError.setText(rb.getString("loginerror"));
+        }
+
 
     public void logger(String username, String attempt) {
         try {

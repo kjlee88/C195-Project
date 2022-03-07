@@ -72,7 +72,7 @@ public class CustomerDAO {
 
 
 
-    public static void addCustomer(String name, String address, String postal, String phone, int countryID, int stateID) {
+    public static void addCustomer(String name, String address, String postal, String phone, int stateID) {
         Integer customer_ID = assignCustomerID();
         Timestamp utcTime = TimeAndZone.getTimestamp();
         try {
@@ -86,7 +86,7 @@ public class CustomerDAO {
         }
     }
 
-    public static void editCustomer(Integer customer_id, String name, String address, String postal, String phone, int countryID, int stateID){
+    public static void editCustomer(Integer customer_id, String name, String address, String postal, String phone, int stateID){
         Timestamp utcTime = TimeAndZone.getTimestamp();
         try {
             Statement stmt = JDBC.connection.createStatement();
