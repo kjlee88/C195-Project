@@ -47,15 +47,12 @@ public class Login implements Initializable {
     private TextField usernameInput;
 
     public static ZoneId userZoneID = ZoneId.systemDefault();
-    private int verifiedUserID;
-    private String verifiedUserLogin;
 
 
     ResourceBundle rb = ResourceBundle.getBundle("util.lang",Locale.getDefault());
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        System.out.println(userZoneID);
         zoneInfo.setText(String.valueOf(userZoneID));
         try {
             rb = ResourceBundle.getBundle("util.lang", Locale.getDefault());
@@ -68,13 +65,6 @@ public class Login implements Initializable {
 
     }
 
-    /*public void produceError(URL url, ResourceBundle rb) {
-        zoneInfo.setText(String.valueOf(userZoneID));
-        try {
-            rb = ResourceBundle.getBundle("util.lang", Locale.getDefault());
-            userID.setText(rb.getString("username"));
-        } catch (MissingResourceException e) {}
-    }*/
 
     private int getUserID(String username) throws SQLException {
         int userID = 0;

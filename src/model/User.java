@@ -10,7 +10,6 @@ public class User {
         this.userID = userID;
         this.username = username;
 
-        System.out.println("created");
     }
 
 

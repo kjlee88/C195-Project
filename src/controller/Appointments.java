@@ -29,6 +29,8 @@ import java.util.ResourceBundle;
 
 public class Appointments implements Initializable {
     @FXML
+    private RadioButton viewAllRadio;
+    @FXML
     private RadioButton weekly;
     @FXML
     private ToggleGroup scheduleView;
@@ -92,7 +94,6 @@ public class Appointments implements Initializable {
     private ComboBox endTimeComboBox;
     @FXML
     public ComboBox<Integer> customerIdComboBox;
-    public static boolean validityCheck;
     public static boolean overlapCheck;
     public static boolean requiredInputCheck;
 
@@ -130,43 +131,69 @@ public class Appointments implements Initializable {
 
     public void onMonthly(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentDAO.getAppointmentsThisMonth());
-        refreshAppointmentList();
+        appointIdCol.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("contactID"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        startTimeCol.setCellValueFactory(new PropertyValueFactory<>("startTimeLocal"));
+        endTimeCol.setCellValueFactory(new PropertyValueFactory<>("endTimeLocal"));
+        customerIdCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+        userIdCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
     }
 
     public void onWeekly(ActionEvent actionEvent) throws ParseException {
         appointmentTable.setItems(AppointmentDAO.getAppointmentsThisWeek());
-        refreshAppointmentList();
+        appointIdCol.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("contactID"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        startTimeCol.setCellValueFactory(new PropertyValueFactory<>("startTimeLocal"));
+        endTimeCol.setCellValueFactory(new PropertyValueFactory<>("endTimeLocal"));
+        customerIdCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+        userIdCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
     }
 
 
     public void onEditButton(ActionEvent actionEvent) {
-        disableInput(false);
-        Appointment appointmentSelected = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
-        Pair<LocalDate, String> start = TimeAndZone.timestampToDateAndTime(appointmentSelected.getStartTimeLocal());
-        Pair<LocalDate, String> end = TimeAndZone.timestampToDateAndTime(appointmentSelected.getEndTimeLocal());
+        if (appointmentTable.getSelectionModel().getSelectedItem() == null){
 
-        appointId.setText(Integer.toString(appointmentSelected.getAppointmentId()));
-        titleInput.setText(appointmentSelected.getTitle());
-        descriptionInput.setText(appointmentSelected.getDescription());
-        locationInput.setText(appointmentSelected.getLocation());
-        contactComboBox.setValue(appointmentSelected.getContactObject());
-        typeInput.setText(appointmentSelected.getType());
-        startDatePicker.setValue(start.getKey());
-        startTimeComboBox.setValue(start.getValue());
-        endDatePicker.setValue(end.getKey());
-        endTimeComboBox.setValue(end.getValue());
-        customerIdComboBox.setValue(appointmentSelected.getCustomerID());
-        userIdComboBox.setValue(appointmentSelected.getUserID());
+        } else {
+            disableInput(false);
+            Appointment appointmentSelected = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+            Pair<LocalDate, String> start = TimeAndZone.timestampToDateAndTime(appointmentSelected.getStartTimeLocal());
+            Pair<LocalDate, String> end = TimeAndZone.timestampToDateAndTime(appointmentSelected.getEndTimeLocal());
+
+            appointId.setText(Integer.toString(appointmentSelected.getAppointmentId()));
+            titleInput.setText(appointmentSelected.getTitle());
+            descriptionInput.setText(appointmentSelected.getDescription());
+            locationInput.setText(appointmentSelected.getLocation());
+            contactComboBox.setValue(appointmentSelected.getContactObject());
+            typeInput.setText(appointmentSelected.getType());
+            startDatePicker.setValue(start.getKey());
+            startTimeComboBox.setValue(start.getValue());
+            endDatePicker.setValue(end.getKey());
+            endTimeComboBox.setValue(end.getValue());
+            customerIdComboBox.setValue(appointmentSelected.getCustomerID());
+            userIdComboBox.setValue(appointmentSelected.getUserID());
+        }
 
     }
 
     public void onDelButton(ActionEvent actionEvent) throws SQLException {
-        Appointment appointmentSelected = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
-        int appointment_id = appointmentSelected.getAppointmentId();
-        AppointmentDAO.delAppointment(appointment_id);
-        appointmentTable.setItems(AppointmentDAO.getAllAppointments());
-        refreshAppointmentList();
-        onClear();
+        if (appointmentTable.getSelectionModel().getSelectedItem() == null){
+
+        } else {
+            Appointment appointmentSelected = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+            int appointment_id = appointmentSelected.getAppointmentId();
+            AppointmentDAO.delAppointment(appointment_id, appointmentSelected.getType());
+            appointmentTable.setItems(AppointmentDAO.getAllAppointments());
+            refreshAppointmentList();
+            onClear();
+        }
     }
 
     public void onNewButton(ActionEvent actionEvent) {
@@ -198,25 +225,38 @@ public class Appointments implements Initializable {
             String startTimeLocal = TimeAndZone.generateUTCTimestamp(startDate, startTime);
             String endTimeLocal = TimeAndZone.generateUTCTimestamp(endDate, endTime);
 
-            validityCheck = AppointmentDAO.appointmentTimeValidityCheck(startTimeLocal, endTimeLocal);
-            overlapCheck = AppointmentDAO.customerOverlapCheck(customerID, startTimeLocal);
+            if (AppointmentDAO.appointmentTimeValidityCheck(startTimeLocal, endTimeLocal)) {
 
-            if (validityCheck && overlapCheck && requiredInputCheck) {
-
-                if (appointId.getText().isEmpty()) {
-                    AppointmentDAO.addAppointment(title, description, location, type, startTimeLocal, endTimeLocal, customerID, userID, contactID);
-                } else {
-                    int appointmentID = Integer.parseInt(appointId.getText());
-                    AppointmentDAO.editAppointment(appointmentID, title, description, location, type, startTimeLocal, endTimeLocal, customerID, userID, contactID);
+                if (AppointmentDAO.customerOverlapCheck(customerID, startTimeLocal, endTimeLocal)) {
+                    if (appointId.getText().isEmpty()) {
+                        AppointmentDAO.addAppointment(title, description, location, type, startTimeLocal, endTimeLocal, customerID, userID, contactID);
+                        appointmentTable.setItems(AppointmentDAO.getAllAppointments());
+                        refreshAppointmentList();
+                        onClear();
+                    } else {
+                        int appointmentID = Integer.parseInt(appointId.getText());
+                        AppointmentDAO.editAppointment(appointmentID, title, description, location, type, startTimeLocal, endTimeLocal, customerID, userID, contactID);
+                        appointmentTable.setItems(AppointmentDAO.getAllAppointments());
+                        refreshAppointmentList();
+                        onClear();
+                    }
                 }
-
-                appointmentTable.setItems(AppointmentDAO.getAllAppointments());
-                refreshAppointmentList();
-                onClear();
             }
         }
     }
 
+    private boolean requiredInputCheck() throws ParseException {
+        if ((titleInput.getText().isEmpty() || descriptionInput.getText().isEmpty() || locationInput.getText().isEmpty() || contactComboBox.getValue() == null || typeInput.getText().isEmpty() || startDatePicker.getValue() == null || startTimeComboBox.getValue() == null || endDatePicker.getValue() == null || endTimeComboBox.getValue() == null) || customerIdComboBox.getValue() == null || userIdComboBox.getValue() == null) {
+            requiredInputCheck = false;
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("");
+            alert.setHeaderText("Missing input field(s) found");
+            alert.setContentText("All fields are required before submitting");
+            alert.showAndWait();
+        } else {
+            requiredInputCheck = true;
+        } return requiredInputCheck;
+    }
 
     public void onClear() {
         disableInput(true);
@@ -250,18 +290,9 @@ public class Appointments implements Initializable {
     }
 
 
-    private boolean requiredInputCheck() {
-        if (titleInput.getText().isEmpty() || descriptionInput.getText().isEmpty() || locationInput.getText().isEmpty() || contactComboBox.getValue().equals(null) || typeInput.getText().isEmpty() || startDatePicker.getValue().equals(null) || startTimeComboBox.getValue().equals(null) || endDatePicker.getValue().equals(null) || endTimeComboBox.getValue().equals(null) || customerIdComboBox.getValue().equals(null) || userIdComboBox.getValue().equals(null)) {
-            requiredInputCheck = false;
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("");
-            alert.setHeaderText("Missing input field(s) found");
-            alert.setContentText("All fields are required before submitting");
-            alert.showAndWait();
-        } else {
-            requiredInputCheck = true;
-
-        } return requiredInputCheck;
+    public void onViewAllRadio(ActionEvent actionEvent) {
+        contactComboBox.setItems(ContactDAO.getAllContacts());
+        refreshAppointmentList();
+        disableInput(true);
     }
-
 }

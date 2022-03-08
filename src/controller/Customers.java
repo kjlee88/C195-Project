@@ -69,7 +69,6 @@ public class Customers implements Initializable {
     private Button submit;
     @FXML
     private TextField id;
-    private boolean requiredInputCheck;
 
 
     @Override
@@ -80,7 +79,7 @@ public class Customers implements Initializable {
     }
 
     public void refreshCustomerList() {
-        customerTable.setItems(CustomerDAO.getAllCustomers().sorted());
+        customerTable.setItems(CustomerDAO.getAllCustomers());
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -95,6 +94,8 @@ public class Customers implements Initializable {
 
 
     public void onEdit(ActionEvent actionEvent) {
+        if (customerTable.getSelectionModel().getSelectedItem() == null) {
+        } else {
         disableInput(false);
         Customer customerSelected = (Customer) customerTable.getSelectionModel().getSelectedItem();
         id.setText(Integer.toString(customerSelected.getId()));
@@ -104,24 +105,28 @@ public class Customers implements Initializable {
         phoneInput.setText(customerSelected.getPhone());
         countryCombo.setValue(customerSelected.getCountryObject());
         stateCombo.setValue(customerSelected.getStateObject());
+        }
     }
 
 
 
     public void onDel(ActionEvent actionEvent) throws SQLException {
-        Customer customerSelected = (Customer) customerTable.getSelectionModel().getSelectedItem();
-        int customer_id = customerSelected.getId();
-        if (AppointmentDAO.associatedAppointment(customer_id).isEmpty()) {
-            CustomerDAO.delCustomer(customer_id);
-            refreshCustomerList();
+        if (customerTable.getSelectionModel().getSelectedItem() == null) {
         } else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Customer Delete Error");
-            alert.setHeaderText("Customer has an associated appointments");
-            alert.setContentText("You must delete associated appointments first");
-            alert.showAndWait();
+            Customer customerSelected = (Customer) customerTable.getSelectionModel().getSelectedItem();
+            int customer_id = customerSelected.getId();
+            if (AppointmentDAO.associatedAppointment(customer_id).isEmpty()) {
+                CustomerDAO.delCustomer(customer_id);
+                refreshCustomerList();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Customer Delete Error");
+                alert.setHeaderText("Customer has an associated appointments");
+                alert.setContentText("You must delete associated appointments first");
+                alert.showAndWait();
+            }
+            refreshCustomerList();
         }
-        onClear();
     }
 
     /**
@@ -139,30 +144,31 @@ public class Customers implements Initializable {
     }
 
 
-
     /**
      *
      * @param actionEvent Saves a new customer with information provided on the add form.
      */
     public void onSubmit(ActionEvent actionEvent) {
         if (requiredInputCheck()) {
-            String name = nameInput.getText();
-            String address = addressInput.getText();
-            String postal = postalInput.getText();
-            String phone = phoneInput.getText();
-            int countryID = countryCombo.getValue().getCountryID();
-            int stateID = stateCombo.getValue().getStateID();
-            if (id.getText().isEmpty()) {
-                CustomerDAO.addCustomer(name, address, postal, phone, stateID);
-            } else {
-                int customer_ID = Integer.parseInt(id.getText());
-                CustomerDAO.editCustomer(customer_ID, name, address, postal, phone, stateID);
+            if (validphonenumber()) {
+                String name = nameInput.getText();
+                String address = addressInput.getText();
+                String postal = postalInput.getText();
+                String phone = phoneInput.getText();
+                int countryID = countryCombo.getValue().getCountryID();
+                int stateID = stateCombo.getValue().getStateID();
+                if (id.getText().isEmpty()) {
+                    CustomerDAO.addCustomer(name, address, postal, phone, stateID);
+                    onClear();
+                    refreshCustomerList();
+                } else {
+                    int customer_ID = Integer.parseInt(id.getText());
+                    CustomerDAO.editCustomer(customer_ID, name, address, postal, phone, stateID);
+                    onClear();
+                    refreshCustomerList();
+                }
             }
-            refreshCustomerList();
-
-            onClear();
         }
-
     }
 
 
@@ -204,8 +210,8 @@ public class Customers implements Initializable {
     }
 
     private boolean requiredInputCheck() {
-        if (nameInput.getText().isEmpty() || addressInput.getText().isEmpty() || postalInput.getText().isEmpty() || phoneInput.getText().isEmpty() || countryCombo.getValue().equals(null) || stateCombo.getValue().equals(null)) {
-            requiredInputCheck = false;
+        boolean requiredInputCheck = false;
+        if (nameInput.getText().isEmpty() || addressInput.getText().isEmpty() || postalInput.getText().isEmpty() || phoneInput.getText().isEmpty() || countryCombo.getValue() == null || stateCombo.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("");
             alert.setHeaderText("Missing input field(s) found");
@@ -213,7 +219,20 @@ public class Customers implements Initializable {
             alert.showAndWait();
         } else {
             requiredInputCheck = true;
-
         } return requiredInputCheck;
+    }
+
+    private boolean validphonenumber() {
+        boolean validphonenumber = false;
+        if (phoneInput.getText().matches("^[0-9.-]+$")) {
+            validphonenumber = true;
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("");
+            alert.setHeaderText("Phone number is invalid");
+            alert.setContentText("Only numbers and dashes are allowed");
+            alert.showAndWait();
+            validphonenumber = false;
+        } return validphonenumber;
     }
 }

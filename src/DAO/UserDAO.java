@@ -14,7 +14,7 @@ import java.sql.SQLException;
 public class UserDAO {
     public static User currentUser = null;
     public static int userID = 0;
-    //static User currentUser = null;
+
 
     public static ObservableList<Integer> getUserID() {
         ObservableList<Integer> userIdList = FXCollections.observableArrayList();

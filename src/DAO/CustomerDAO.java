@@ -2,11 +2,13 @@ package DAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import model.Customer;
 import util.JDBC;
 import util.TimeAndZone;
 
 import java.sql.*;
+import java.util.Collections;
 
 public class CustomerDAO {
     public static ObservableList<Customer> getAllCustomers() {
@@ -32,6 +34,7 @@ public class CustomerDAO {
         catch (SQLException ex) {
             ex.printStackTrace();
         }
+        Collections.sort(customerList, (c1, c2) -> c1.getId()-c2.getId());
         return customerList;
     }
 
@@ -52,24 +55,6 @@ public class CustomerDAO {
         }
         return customer_ID;
     }
-
-    /* public static int findStateID(String state) {
-        int stateID = 0;
-        try {
-            Statement stmt = JDBC.connection.createStatement();
-            String q = "SELECT Division_ID FROM first_level_divisions WHERE Division='" + state + "'";
-            ResultSet rs = stmt.executeQuery(q);
-
-            while (rs.next()) {
-                stateID = (rs.getInt("Division_ID"));
-
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return stateID;
-    }*/
-
 
 
     public static void addCustomer(String name, String address, String postal, String phone, int stateID) {
@@ -103,6 +88,11 @@ public class CustomerDAO {
             Statement stmt = JDBC.connection.createStatement();
             String q = "DELETE FROM customers WHERE customer_id =" + customer_ID;
             stmt.executeUpdate(q);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("");
+            alert.setHeaderText("Customer was successfully deleted");
+            alert.setContentText("");
+            alert.showAndWait();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

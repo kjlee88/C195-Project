@@ -49,6 +49,7 @@ public class AppointmentDAO {
         } catch (SQLException | ParseException ex) {
             ex.printStackTrace();
         }
+        Collections.sort(appointmentList, (a1, a2) -> a1.getAppointmentId()-a2.getAppointmentId());
         return appointmentList;
 
     }
@@ -116,7 +117,6 @@ public class AppointmentDAO {
             Statement stmt = JDBC.connection.createStatement();
             String q = "INSERT INTO appointments SET appointment_ID=" + appointment_ID + ", Title='" + title + "', Description='" + description + "', Location='" + location + "', Type='" + type + "', Start='" + startTimeLocal + "', End='" + endTimeLocal + "', Create_date='" + utcTime + "', Created_by='script', Last_update='" + utcTime + "', Last_Updated_By='script', Customer_ID=" + customerID + ", User_ID=" + userID + ", Contact_ID=" + contactID;
             stmt.executeUpdate(q);
-            System.out.println("Appointment was added");
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -154,11 +154,16 @@ public class AppointmentDAO {
         }
     }
 
-    public static void delAppointment(Integer appointment_id) throws SQLException {
+    public static void delAppointment(Integer appointment_id, String type) throws SQLException {
         try {
             Statement stmt = JDBC.connection.createStatement();
             String q = "DELETE FROM appointments WHERE Appointment_ID =" + appointment_id;
             stmt.executeUpdate(q);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("");
+            alert.setHeaderText("Appointment has been cancelled");
+            alert.setContentText("Appointment ID: " + appointment_id + "\nAppointment Type: " + type);
+            alert.showAndWait();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -169,8 +174,6 @@ public class AppointmentDAO {
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
         int weekOfYear = today.get(WeekFields.of(Locale.getDefault()).weekOfYear());
 
-
-        System.out.println(weekOfYear);
 
         ObservableList<Appointment> appointmentThisWeek = FXCollections.observableArrayList();
 
@@ -245,33 +248,32 @@ public class AppointmentDAO {
         return validityCheck;
     }
 
-    public static boolean customerOverlapCheck(int customerID, String start) throws ParseException {
+    public static boolean customerOverlapCheck(int customerID, String start, String end) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         java.util.Date newApptStartDateTime = sdf.parse(start);
+        java.util.Date newApptEndDateTime = sdf.parse(end);
         boolean overlapCheck = false;
 
         try {
-            String SQL = "SELECT Start, End FROM appointments WHERE Customer_ID=" + customerID;
+            String SQL = "SELECT Appointment_ID, Start, End FROM appointments WHERE Customer_ID=" + customerID;
             PreparedStatement ps = JDBC.connection.prepareStatement(SQL);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                String startTime = rs.getString(1);
-                String endTime = rs.getString(2);
+                int appointmentID = rs.getInt(1);
+                String startTime = rs.getString(2);
+                String endTime = rs.getString(3);
 
                 java.util.Date startDateTime = sdf.parse(startTime);
                 java.util.Date endDateTime = sdf.parse(endTime);
 
-                System.out.println(newApptStartDateTime + "::" + startDateTime + "::" + endDateTime);
 
-                System.out.println(newApptStartDateTime.before(endDateTime) && newApptStartDateTime.after(startDateTime));
-
-                if (newApptStartDateTime.before(endDateTime) && newApptStartDateTime.after(startDateTime)) {
+                if ((newApptStartDateTime.before(endDateTime) && newApptStartDateTime.after(startDateTime))||(newApptEndDateTime.before(endDateTime) && newApptEndDateTime.after(startDateTime))) {
                     overlapCheck = false;
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("");
                     alert.setHeaderText("Customer has another overlapping appointment");
-                    alert.setContentText("Select a different start time");
+                    alert.setContentText("Review Appointment ID: " + appointmentID + " and adjust either/both start time and end time.");
                     alert.showAndWait();
                 } else {
                     overlapCheck = true;

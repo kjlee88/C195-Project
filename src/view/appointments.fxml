@@ -109,11 +109,12 @@
             <ComboBox fx:id="customerIdComboBox" layoutX="170.0" layoutY="291.0" prefHeight="26.0" prefWidth="156.0" />
             </children>
         </AnchorPane>
-      <RadioButton fx:id="monthly" layoutX="18.0" layoutY="22.0" mnemonicParsing="false" onAction="#onMonthly" selected="false" text="This Month" toggleGroup="$scheduleView">
+      <RadioButton fx:id="monthly" layoutX="97.0" layoutY="22.0" mnemonicParsing="false" onAction="#onMonthly" text="This Month" toggleGroup="$scheduleView">
          <toggleGroup>
             <ToggleGroup fx:id="scheduleView" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton fx:id="weekly" layoutX="121.0" layoutY="22.0" mnemonicParsing="false" onAction="#onWeekly" text="This Week" toggleGroup="$scheduleView" />
+      <RadioButton fx:id="weekly" layoutX="191.0" layoutY="22.0" mnemonicParsing="false" onAction="#onWeekly" text="This Week" toggleGroup="$scheduleView" />
+      <RadioButton fx:id="viewAllRadio" layoutX="15.0" layoutY="22.0" mnemonicParsing="false" onAction="#onViewAllRadio" selected="true" text="View All" toggleGroup="$scheduleView" />
     </children>
 </AnchorPane>
