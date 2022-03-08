@@ -49,8 +49,18 @@ public class Login implements Initializable {
     public static ZoneId userZoneID = ZoneId.systemDefault();
 
 
+    /**
+     * Defines path for language property package
+     */
     ResourceBundle rb = ResourceBundle.getBundle("util.lang",Locale.getDefault());
 
+
+    /**
+     * Detects userZone and uses that to determine with language to display
+     * Takes in username and password
+     * @param url
+     * @param rb
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         zoneInfo.setText(String.valueOf(userZoneID));
@@ -65,6 +75,12 @@ public class Login implements Initializable {
 
     }
 
+    /**
+     * Grabs the username to find the user ID from SQL database
+     * @param username
+     * @return userID
+     * @throws SQLException
+     */
 
     private int getUserID(String username) throws SQLException {
         int userID = 0;
@@ -76,6 +92,13 @@ public class Login implements Initializable {
         return userID;
     }
 
+    /**
+     * uses primary key userID to get password and saves it
+     * @param userID
+     * @return
+     * @throws SQLException
+     */
+
     private String getPassword(int userID) throws SQLException {
         String passwordDB = " ";
         Statement stmt = JDBC.connection.createStatement();
@@ -85,6 +108,15 @@ public class Login implements Initializable {
         }
         return passwordDB;
     }
+
+    /**
+     * Compares password user entered with saved password from database
+     * If matches, then login user is created
+     * records both successful and failed login activities to login_activity file
+     * @param event
+     * @throws SQLException
+     * @throws IOException
+     */
 
     @FXML
     private void login(ActionEvent event) throws SQLException, IOException {
@@ -105,6 +137,11 @@ public class Login implements Initializable {
         }
 
 
+    /**
+     * Creates login_activity file to user directory
+     * @param username
+     * @param attempt
+     */
     public void logger(String username, String attempt) {
         try {
             String fileName = "login_activity";

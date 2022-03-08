@@ -37,6 +37,13 @@ public class Menu implements Initializable {
     private Button exit;
     public LocalDateTime loginTime;
 
+    /**
+     * Initializes the menu screen
+     * Calls for eligible appointment list (upcoming within 15 minutes)
+     * and parses it to the large text area
+     * @param url
+     * @param rb
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loginTime = LocalDateTime.now();
@@ -52,6 +59,11 @@ public class Menu implements Initializable {
         }
     }
 
+    /**
+     * Loads customer management screen
+     * @param actionEvent
+     * @throws Exception
+     */
 
     public void onCustomers(ActionEvent actionEvent) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
@@ -61,6 +73,12 @@ public class Menu implements Initializable {
         stage.show();
     }
 
+    /**
+     * Loads appointment management screen
+     * @param actionEvent
+     * @throws Exception
+     */
+
     public void onAppointments(ActionEvent actionEvent) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -69,6 +87,11 @@ public class Menu implements Initializable {
         stage.show();
     }
 
+    /**
+     * Loads reports screen
+     * @param actionEvent
+     * @throws Exception
+     */
 
     public void onReports(ActionEvent actionEvent) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));

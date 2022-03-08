@@ -70,6 +70,12 @@ public class Customers implements Initializable {
     @FXML
     private TextField id;
 
+    /**
+     * Initializes Customer management screen
+     * populates Country combobox
+     * @param url
+     * @param rb
+     */
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -78,6 +84,10 @@ public class Customers implements Initializable {
         disableInput(true);
     }
 
+
+    /**
+     * Refreshes the table with customer list
+     */
     public void refreshCustomerList() {
         customerTable.setItems(CustomerDAO.getAllCustomers());
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -90,8 +100,10 @@ public class Customers implements Initializable {
     }
 
 
-
-
+    /**
+     * Parses selected customer's information to the input fields
+     * @param actionEvent
+     */
 
     public void onEdit(ActionEvent actionEvent) {
         if (customerTable.getSelectionModel().getSelectedItem() == null) {
@@ -108,6 +120,13 @@ public class Customers implements Initializable {
         }
     }
 
+
+    /**
+     * Deletes seleccted customer
+     * Checks if the customer has associated appointments
+     * @param actionEvent
+     * @throws SQLException
+     */
 
 
     public void onDel(ActionEvent actionEvent) throws SQLException {
@@ -130,13 +149,17 @@ public class Customers implements Initializable {
     }
 
     /**
-     *
-     *
-     * @param actionEvent Activates customer add form on the right of the screen.
+     * Activates customer add form on the right of the screen.
+     * @param actionEvent
      */
     public void onAdd(ActionEvent actionEvent) {
         disableInput(false);
     }
+
+    /**
+     * Once Country is selected, it pulls associated Division information
+     * @param actionEvent
+     */
 
     public void onCountryCombo(ActionEvent actionEvent){
         Country c = countryCombo.getValue();
@@ -145,7 +168,7 @@ public class Customers implements Initializable {
 
 
     /**
-     *
+     * Validates all inputs and saves them under Customer class
      * @param actionEvent Saves a new customer with information provided on the add form.
      */
     public void onSubmit(ActionEvent actionEvent) {
@@ -173,7 +196,7 @@ public class Customers implements Initializable {
 
 
     /**
-     *
+     * Takes the user back to the main menu
      * @param actionEvent Returns to the menu options.
      * @throws IOException Missing the menu screen.
      */
@@ -222,6 +245,12 @@ public class Customers implements Initializable {
         } return requiredInputCheck;
     }
 
+
+    /**
+     * Part of input validators. Looks for any unnatural inputs for phone number
+     * Defines only allowable characters are digits and dashes
+     * @return
+     */
     private boolean validphonenumber() {
         boolean validphonenumber = false;
         if (phoneInput.getText().matches("^[0-9.-]+$")) {

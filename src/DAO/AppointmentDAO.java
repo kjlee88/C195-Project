@@ -17,9 +17,19 @@ import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.Date;
 
+
+/**
+ * Apppointment Data access object class
+ * Any function that will interact with SQL will be found here
+ */
 public class AppointmentDAO {
 
 
+    /**
+     * SQL script top pull appointment data
+     * and saves it to variables that can be used to create Appointment class object
+     * @return appointmentList
+     */
     public static ObservableList getAllAppointments() {
         ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
@@ -51,10 +61,20 @@ public class AppointmentDAO {
         } catch (SQLException | ParseException ex) {
             ex.printStackTrace();
         }
+
+        /**
+         * Lambda expression #1
+         * Sorts the appointment List by comparing Appointment IDs
+         */
         Collections.sort(appointmentList, (a1, a2) -> a1.getAppointmentId()-a2.getAppointmentId());
         return appointmentList;
 
     }
+
+    /**
+     * Grab all appointments filtered by current month
+     * @return appointmentThisMonth
+     */
 
     public static ObservableList getAppointmentsThisMonth() {
         String currentDate = TimeAndZone.getDate().toString();
@@ -94,11 +114,17 @@ public class AppointmentDAO {
 
     }
 
+    /**
+     * Creates time slots for appointment time
+     * original time slots were written in UTC time, to reflect 8am-10pm EST business hour
+     * @return availableTimeList
+     */
 
     public static ObservableList availableTime() {
         ObservableList<String> availableTimeList = FXCollections.observableArrayList();
 
         String[] timeList = {"13:00", "13:15", "13:30", "13:45", "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45", "16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45", "20:00", "20:15", "20:30", "20:45", "21:00", "21:15", "21:30", "21:45", "22:00", "22:15", "22:30", "22:45", "23:00", "23:15", "23:30", "23:45", "00:00", "00:15", "00:30", "00:45", "01:00", "01:15", "01:30", "01:45", "02:00", "02:15", "02:30", "02:45", "03:00"};
+
 
         Arrays.stream(timeList).forEach(i -> {
             try {
@@ -109,6 +135,10 @@ public class AppointmentDAO {
         });
         return availableTimeList;
     }
+
+    /**
+     *Receives variables from appointment form and loads it to the MySQL database
+     */
 
     public static void addAppointment(String title, String description, String location, String type, String startTimeLocal, String endTimeLocal, int customerID, int userID, int contactID) {
 
@@ -125,6 +155,10 @@ public class AppointmentDAO {
         }
     }
 
+    /**
+     * Assings appointment ID
+     * @return appointment_ID
+     */
     private static Integer assignAppointmentID() {
         Integer appointment_ID = 1;
         try {
@@ -143,6 +177,20 @@ public class AppointmentDAO {
         return appointment_ID;
     }
 
+
+    /**
+     * Parameters were received and are being exported to database
+     * @param appointmentID
+     * @param title
+     * @param description
+     * @param location
+     * @param type
+     * @param startTimeLocal
+     * @param endTimeLocal
+     * @param customerID
+     * @param userID
+     * @param contactID
+     */
     public static void editAppointment(int appointmentID, String title, String description, String location, String type, String startTimeLocal, String endTimeLocal, int customerID, int userID, int contactID) {
         Timestamp utcTime = TimeAndZone.getTimestamp();
 
@@ -214,7 +262,12 @@ public class AppointmentDAO {
         return appointmentThisWeek;
     }
 
-    //Check if customer has any appointments
+    /**
+     * Receives userID and use that as a key to look for all appointments for the customer
+     * @param b
+     * @return assocAppoint
+     * @throws SQLException
+     */
 
     public static String associatedAppointment(int b) throws SQLException {
         String assocAppoint = "";

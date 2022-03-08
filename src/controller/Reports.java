@@ -21,6 +21,7 @@ public class Reports {
     public Button report2;
     public Button exit;
 
+
     public void initialize(){
         textArea.setText("Choose from one of the reports below.");
     }

@@ -26,6 +26,11 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
+/**
+ * FXML Controller class
+ * shows appointments. provides add/update/delelete user interfaces
+ * @author Kyung Jun Lee
+ */
 
 public class Appointments implements Initializable {
     @FXML
@@ -97,8 +102,11 @@ public class Appointments implements Initializable {
     public static boolean overlapCheck;
     public static boolean requiredInputCheck;
 
-
-
+    /**
+     * Initializes the controller class.
+     * @param url
+     * @param rb
+     */
     @Override
     public void initialize (URL url, ResourceBundle rb) {
         customerIdComboBox.setItems(CustomerDAO.getCustomerID());
@@ -111,8 +119,10 @@ public class Appointments implements Initializable {
     }
 
 
-
-
+    /**
+     * Refreshes the appointment list
+     * parses attributes to tableview
+     */
 
     public void refreshAppointmentList() {
         appointmentTable.setItems(AppointmentDAO.getAllAppointments());
@@ -128,6 +138,10 @@ public class Appointments implements Initializable {
         userIdCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
     }
 
+    /**
+     * Switches the appointment list to current monthly view
+     * @param actionEvent
+     */
 
     public void onMonthly(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentDAO.getAppointmentsThisMonth());
@@ -143,6 +157,11 @@ public class Appointments implements Initializable {
         userIdCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
     }
 
+    /**
+     * Switches the appointment list to current weekly view
+     * @param actionEvent
+     * @throws ParseException
+     */
     public void onWeekly(ActionEvent actionEvent) throws ParseException {
         appointmentTable.setItems(AppointmentDAO.getAppointmentsThisWeek());
         appointIdCol.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
@@ -157,6 +176,9 @@ public class Appointments implements Initializable {
         userIdCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
     }
 
+    /**
+     * Parses selected customer's information to the input forms
+     */
 
     public void onEditButton(ActionEvent actionEvent) {
         if (appointmentTable.getSelectionModel().getSelectedItem() == null){
@@ -183,6 +205,12 @@ public class Appointments implements Initializable {
 
     }
 
+    /**
+     * Deletes selected customer
+     * @param actionEvent
+     * @throws SQLException
+     */
+
     public void onDelButton(ActionEvent actionEvent) throws SQLException {
         if (appointmentTable.getSelectionModel().getSelectedItem() == null){
 
@@ -196,9 +224,19 @@ public class Appointments implements Initializable {
         }
     }
 
+    /**
+     * Activates the input fields so user can add new customers
+     * @param actionEvent
+     */
     public void onNewButton(ActionEvent actionEvent) {
         disableInput(false);
     }
+
+    /**
+     * Exits to the main menu
+     * @param actionEvent
+     * @throws IOException
+     */
 
     public void onExit(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/menu.fxml"));
@@ -207,6 +245,12 @@ public class Appointments implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+
+    /**
+     * Performs input validation then saving all fields that make up the Appointment class
+     * @param actionEvent
+     * @throws ParseException
+     */
 
     public void onSubmit(ActionEvent actionEvent) throws ParseException {
         if (requiredInputCheck()) {
@@ -245,6 +289,13 @@ public class Appointments implements Initializable {
         }
     }
 
+
+    /**
+     * Logic written to validate user input
+     * @return
+     * @throws ParseException
+     */
+
     private boolean requiredInputCheck() throws ParseException {
         if ((titleInput.getText().isEmpty() || descriptionInput.getText().isEmpty() || locationInput.getText().isEmpty() || contactComboBox.getValue() == null || typeInput.getText().isEmpty() || startDatePicker.getValue() == null || startTimeComboBox.getValue() == null || endDatePicker.getValue() == null || endTimeComboBox.getValue() == null) || customerIdComboBox.getValue() == null || userIdComboBox.getValue() == null) {
             requiredInputCheck = false;
@@ -258,6 +309,9 @@ public class Appointments implements Initializable {
         } return requiredInputCheck;
     }
 
+    /**
+     * Resets the input forms
+     */
     public void onClear() {
         disableInput(true);
         appointId.setPromptText("Auto Gen- Disabled");
@@ -273,6 +327,10 @@ public class Appointments implements Initializable {
         endDatePicker.setValue(null);
     }
 
+    /**
+     * Disables input forms to prevent user inputs
+     * @param b
+     */
     public void disableInput(boolean b) {
         titleInput.setDisable(b);
         descriptionInput.setDisable(b);
@@ -290,6 +348,10 @@ public class Appointments implements Initializable {
     }
 
 
+    /**
+     * Switches back to all appointment list view
+     * @param actionEvent
+     */
     public void onViewAllRadio(ActionEvent actionEvent) {
         contactComboBox.setItems(ContactDAO.getAllContacts());
         refreshAppointmentList();
