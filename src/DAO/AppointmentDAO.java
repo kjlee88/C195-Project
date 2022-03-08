@@ -7,7 +7,9 @@ import model.Appointment;
 import util.JDBC;
 import util.TimeAndZone;
 
+import javax.swing.text.DateFormatter;
 import java.sql.*;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -288,7 +290,6 @@ public class AppointmentDAO {
 
     public static String upcomingAppointments(LocalDateTime loginTime, int userID) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String alertTime = loginTime.plusMinutes(15).toString();
         java.util.Date currentTimeFormatted = sdf.parse(loginTime.toString());
         java.util.Date alertTimeFormatted = sdf.parse(alertTime);
@@ -303,9 +304,13 @@ public class AppointmentDAO {
             while (rs.next()) {
                 String appointmentId = rs.getString("Appointment_ID");
                 String startTime = rs.getString("Start");
-                Date startDateTime = sdf2.parse(TimeAndZone.convertToLocalTime(startTime));
 
-                if (startDateTime.before(alertTimeFormatted) && startDateTime.after(currentTimeFormatted)) {
+                DateFormat dateFormatUTC = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                dateFormatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+                Date timestampLocal = dateFormatUTC.parse(startTime);
+
+                if (timestampLocal.before(alertTimeFormatted) && timestampLocal.after(currentTimeFormatted)) {
                     alertList += "Appointment ID: " + appointmentId + "\t\tStart Time: " + startTime;
                 }
             }
