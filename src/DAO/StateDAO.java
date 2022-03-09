@@ -11,6 +11,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class StateDAO {
+
+    /**
+     * Adds all state objects to a list
+     * @param countryID is used to filter states by country
+     * @return stateList
+     */
     public static ObservableList<State> getAllStates(int countryID) {
         ObservableList<State> stateList = FXCollections.observableArrayList();
         try {

@@ -77,7 +77,7 @@ public class Login implements Initializable {
 
     /**
      * Grabs the username to find the user ID from SQL database
-     * @param username
+     * @param username uses username provided by user at the login screen
      * @return userID
      * @throws SQLException
      */
@@ -94,8 +94,8 @@ public class Login implements Initializable {
 
     /**
      * uses primary key userID to get password and saves it
-     * @param userID
-     * @return
+     * @param userID userID that was found on customers table using getUserID method
+     * @return returns password found on customers table for passed userID
      * @throws SQLException
      */
 
@@ -113,9 +113,9 @@ public class Login implements Initializable {
      * Compares password user entered with saved password from database
      * If matches, then login user is created
      * records both successful and failed login activities to login_activity file
-     * @param event
-     * @throws SQLException
-     * @throws IOException
+     * @param event event
+     * @throws SQLException sql error
+     * @throws IOException i/o error
      */
 
     @FXML
@@ -139,8 +139,8 @@ public class Login implements Initializable {
 
     /**
      * Creates login_activity file to user directory
-     * @param username
-     * @param attempt
+     * @param username username entered at login screen
+     * @param attempt variable that either prints successful or unsuccessful login events
      */
     public void logger(String username, String attempt) {
         try {

@@ -11,6 +11,11 @@ import java.sql.*;
 import java.util.Collections;
 
 public class CustomerDAO {
+
+    /**
+     * gets all customer objects from database
+     * @return a list of customers
+     */
     public static ObservableList<Customer> getAllCustomers() {
         ObservableList<Customer> customerList = FXCollections.observableArrayList();
         try {
@@ -38,6 +43,10 @@ public class CustomerDAO {
         return customerList;
     }
 
+    /**
+     * Assigns customerID to newly added customer object
+     * @return customerID
+     */
     public static Integer assignCustomerID(){
         Integer customer_ID = 1;
         try {
@@ -56,6 +65,14 @@ public class CustomerDAO {
         return customer_ID;
     }
 
+    /**
+     * Add a new customer to the database using parameters passed by Customers.onSubmit()
+     * @param name name
+     * @param address address
+     * @param postal postal code
+     * @param phone phone number
+     * @param stateID division ID
+     */
 
     public static void addCustomer(String name, String address, String postal, String phone, int stateID) {
         Integer customer_ID = assignCustomerID();
@@ -71,6 +88,16 @@ public class CustomerDAO {
         }
     }
 
+    /**
+     * Edit any columns from an existing customer row
+     * @param customer_id customerID, immutable, defines the customer object being edited
+     * @param name customer name
+     * @param address address
+     * @param postal postal code
+     * @param phone phone number
+     * @param stateID division ID
+     */
+
     public static void editCustomer(Integer customer_id, String name, String address, String postal, String phone, int stateID){
         Timestamp utcTime = TimeAndZone.getTimestamp();
         try {
@@ -82,8 +109,12 @@ public class CustomerDAO {
         }
     }
 
-
-    public static void delCustomer(Integer customer_ID) throws SQLException {
+    /**
+     * Deletes selected customer from the database
+     * @param customer_ID
+     * @throws SQLException
+     */
+    public static void delCustomer(Integer customer_ID) {
         try {
             Statement stmt = JDBC.connection.createStatement();
             String q = "DELETE FROM customers WHERE customer_id =" + customer_ID;
@@ -99,6 +130,10 @@ public class CustomerDAO {
 
     }
 
+    /**
+     * Creates list of all customer IDs
+     * @return customerIdList
+     */
     public static ObservableList<Integer> getCustomerID() {
         ObservableList<Integer> customerIdList = FXCollections.observableArrayList();
         try {

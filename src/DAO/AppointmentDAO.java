@@ -6,8 +6,6 @@ import javafx.scene.control.Alert;
 import model.Appointment;
 import util.JDBC;
 import util.TimeAndZone;
-
-import javax.swing.text.DateFormatter;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -19,6 +17,7 @@ import java.util.Date;
 
 
 /**
+ *
  * Apppointment Data access object class
  * Any function that will interact with SQL will be found here
  */
@@ -180,16 +179,16 @@ public class AppointmentDAO {
 
     /**
      * Parameters were received and are being exported to database
-     * @param appointmentID
-     * @param title
-     * @param description
-     * @param location
-     * @param type
-     * @param startTimeLocal
-     * @param endTimeLocal
-     * @param customerID
-     * @param userID
-     * @param contactID
+     * @param appointmentID appointment ID
+     * @param title title
+     * @param description description
+     * @param location location
+     * @param type type
+     * @param startTimeLocal start time in local time zone
+     * @param endTimeLocal end time in local time zone
+     * @param customerID customer ID
+     * @param userID userID
+     * @param contactID contactID
      */
     public static void editAppointment(int appointmentID, String title, String description, String location, String type, String startTimeLocal, String endTimeLocal, int customerID, int userID, int contactID) {
         Timestamp utcTime = TimeAndZone.getTimestamp();
@@ -204,6 +203,12 @@ public class AppointmentDAO {
         }
     }
 
+    /**
+     * deletes selected appointment
+     * @param appointment_id uses to define which appointment object to be deleted
+     * @param type alerts the user the type of appointment to be deleted
+     * @throws SQLException
+     */
     public static void delAppointment(Integer appointment_id, String type) throws SQLException {
         try {
             Statement stmt = JDBC.connection.createStatement();
@@ -220,7 +225,11 @@ public class AppointmentDAO {
 
     }
 
-    public static ObservableList getAppointmentsThisWeek() throws ParseException {
+    /**
+     * Determines current week by using today's date in local timezone
+     */
+
+    public static ObservableList getAppointmentsThisWeek() {
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
         int weekOfYear = today.get(WeekFields.of(Locale.getDefault()).weekOfYear());
 
@@ -248,7 +257,6 @@ public class AppointmentDAO {
                 String startTimeLocal = TimeAndZone.convertToLocalTime(startTime);
                 String endTimeLocal = TimeAndZone.convertToLocalTime(endTime);
                 LocalDate appointDay = LocalDate.parse(startTimeLocal.substring(0, 10));
-                //java.util.Date appointmentDate = dateFormatLocal.parse(startTimeLocal);
                 int appointWeekOfYear = appointDay.get(WeekFields.of(Locale.getDefault()).weekOfYear());
 
                 if (appointWeekOfYear == weekOfYear) {
@@ -264,9 +272,9 @@ public class AppointmentDAO {
 
     /**
      * Receives userID and use that as a key to look for all appointments for the customer
-     * @param b
-     * @return assocAppoint
-     * @throws SQLException
+     * @param b used to define customerID
+     * @return assocAppoint returns all associated appointments for customerID = b
+     * @throws SQLException sql error
      */
 
     public static String associatedAppointment(int b) throws SQLException {
@@ -282,6 +290,13 @@ public class AppointmentDAO {
         return assocAppoint;
     }
 
+    /**
+     * Returns boolean value after performing logical test appointment using start time and end time.
+     * @param start
+     * @param end
+     * @return boolean validityCheck
+     * @throws ParseException
+     */
     public static boolean appointmentTimeValidityCheck(String start, String end) throws ParseException {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -302,6 +317,15 @@ public class AppointmentDAO {
         }
         return validityCheck;
     }
+
+    /**
+     * Returns boolean value after checking if the customer has any saved appointments that overlaps with the proposed appointment start and end time
+     * @param customerID customerID
+     * @param start appointment Start time
+     * @param end appointment End time
+     * @return overlapCheck boolean that returns after logical tests
+     * @throws ParseException parse error
+     */
 
     public static boolean customerOverlapCheck(int customerID, String start, String end) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -339,6 +363,14 @@ public class AppointmentDAO {
         }
         return overlapCheck;
     }
+
+    /**
+     * Receives login time and check if there are any appointments starting in the next 15 minutes. Eligible appointments get added to the text string.
+     * @param loginTime captured local time when user logged in successfully
+     * @param userID used to identify user object
+     * @return alertList is a string variable that lists any eligible appointments
+     * @throws ParseException parse error
+     */
 
 
     public static String upcomingAppointments(LocalDateTime loginTime, int userID) throws ParseException {

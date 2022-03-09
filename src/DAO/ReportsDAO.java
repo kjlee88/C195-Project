@@ -13,6 +13,10 @@ import java.text.ParseException;
 
 public class ReportsDAO {
 
+    /**
+     * @return a text file that shows the total number of appointments by appointment type and month
+     * @throws SQLException sql error
+     */
 
     public static String report1() throws SQLException {
         String SQL = "SELECT COUNT(Appointment_ID) AS 'Count', Type , MONTH(Start) AS 'Month', YEAR(Start) AS 'Year' FROM appointments a GROUP BY Year, Month, Type";
@@ -29,6 +33,11 @@ public class ReportsDAO {
 
     }
 
+    /**
+     * @return a text file that shows the total number of appointments by country and month
+     * @throws SQLException sql error
+     */
+
     public static String report2() throws SQLException {
         String SQL = "SELECT COUNT(appointments.Appointment_ID) AS 'Count', MONTH(appointments.Start) AS 'Month', YEAR(appointments.Start) AS 'Year', countries.Country AS 'Country' FROM appointments JOIN customers ON customers.Customer_ID = appointments.Customer_ID JOIN first_level_divisions on first_level_divisions.Division_ID = customers.Division_ID JOIN countries on countries.Country_ID = first_level_divisions.Country_ID GROUP BY Year, Month, Country";
         PreparedStatement ps = JDBC.connection.prepareStatement(SQL);
@@ -44,6 +53,11 @@ public class ReportsDAO {
 
     }
 
+    /**
+     * @return text file that shows each contact person's schedule
+     * @throws SQLException sql error
+     * @throws ParseException parse error
+     */
     public static String report3() throws SQLException, ParseException {
         String SQL = "SELECT contacts.Contact_name, appointments.Appointment_ID, appointments.Title, appointments.Type, appointments.description, appointments.Start, appointments.End, appointments.customer_ID FROM appointments JOIN contacts ON contacts.contact_ID = appointments.contact_ID ORDER BY Contact_name, Start";
         PreparedStatement ps = JDBC.connection.prepareStatement(SQL);

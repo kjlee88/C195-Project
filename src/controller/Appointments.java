@@ -104,8 +104,8 @@ public class Appointments implements Initializable {
 
     /**
      * Initializes the controller class.
-     * @param url
-     * @param rb
+     * @param url url
+     * @param rb resource bundle
      */
     @Override
     public void initialize (URL url, ResourceBundle rb) {
@@ -140,7 +140,7 @@ public class Appointments implements Initializable {
 
     /**
      * Switches the appointment list to current monthly view
-     * @param actionEvent
+     * @param actionEvent actionEvent calls all appointments in database and parse parameter to the column
      */
 
     public void onMonthly(ActionEvent actionEvent) {
@@ -159,8 +159,8 @@ public class Appointments implements Initializable {
 
     /**
      * Switches the appointment list to current weekly view
-     * @param actionEvent
-     * @throws ParseException
+     * @param actionEvent actionEvent calls all appointments in database and parse parameter to the column
+     * @throws ParseException parse error
      */
     public void onWeekly(ActionEvent actionEvent) throws ParseException {
         appointmentTable.setItems(AppointmentDAO.getAppointmentsThisWeek());
@@ -177,9 +177,8 @@ public class Appointments implements Initializable {
     }
 
     /**
-     * Parses selected customer's information to the input forms
+     * Parses selected appointment's information to the input forms
      */
-
     public void onEditButton(ActionEvent actionEvent) {
         if (appointmentTable.getSelectionModel().getSelectedItem() == null){
 
@@ -206,9 +205,9 @@ public class Appointments implements Initializable {
     }
 
     /**
-     * Deletes selected customer
-     * @param actionEvent
-     * @throws SQLException
+     * Deletes selected appointment
+     * @param actionEvent actionEvent that passes selected customer to delete method
+     * @throws SQLException SQL error
      */
 
     public void onDelButton(ActionEvent actionEvent) throws SQLException {
@@ -234,8 +233,8 @@ public class Appointments implements Initializable {
 
     /**
      * Exits to the main menu
-     * @param actionEvent
-     * @throws IOException
+     * @param actionEvent actionEvent
+     * @throws IOException I/O error
      */
 
     public void onExit(ActionEvent actionEvent) throws IOException {
@@ -248,8 +247,8 @@ public class Appointments implements Initializable {
 
     /**
      * Performs input validation then saving all fields that make up the Appointment class
-     * @param actionEvent
-     * @throws ParseException
+     * @param actionEvent actionEvent
+     * @throws ParseException parse exception
      */
 
     public void onSubmit(ActionEvent actionEvent) throws ParseException {
@@ -292,8 +291,8 @@ public class Appointments implements Initializable {
 
     /**
      * Logic written to validate user input
-     * @return
-     * @throws ParseException
+     * @return boolean requiredInputCheck
+     * @throws ParseException parse error
      */
 
     private boolean requiredInputCheck() throws ParseException {
@@ -329,7 +328,7 @@ public class Appointments implements Initializable {
 
     /**
      * Disables input forms to prevent user inputs
-     * @param b
+     * @param b boolean that turns disables input fields if true
      */
     public void disableInput(boolean b) {
         titleInput.setDisable(b);
@@ -350,7 +349,7 @@ public class Appointments implements Initializable {
 
     /**
      * Switches back to all appointment list view
-     * @param actionEvent
+     * @param actionEvent action event
      */
     public void onViewAllRadio(ActionEvent actionEvent) {
         contactComboBox.setItems(ContactDAO.getAllContacts());

@@ -249,7 +249,7 @@ public class Customers implements Initializable {
     /**
      * Part of input validators. Looks for any unnatural inputs for phone number
      * Defines only allowable characters are digits and dashes
-     * @return
+     * @return boolean validPhoneNumber
      */
     private boolean validphonenumber() {
         boolean validphonenumber = false;

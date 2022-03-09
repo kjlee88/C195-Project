@@ -10,6 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CountryDAO {
+    /**
+     * get all country objects from database
+     * @return country list
+     */
     public static ObservableList<Country> getAllCountries() {
         ObservableList<Country> countryList = FXCollections.observableArrayList();
         try {

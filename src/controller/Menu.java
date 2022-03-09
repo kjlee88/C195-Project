@@ -61,8 +61,8 @@ public class Menu implements Initializable {
 
     /**
      * Loads customer management screen
-     * @param actionEvent
-     * @throws Exception
+     * @param actionEvent actionEvent
+     * @throws Exception exception error
      */
 
     public void onCustomers(ActionEvent actionEvent) throws Exception{
@@ -75,8 +75,8 @@ public class Menu implements Initializable {
 
     /**
      * Loads appointment management screen
-     * @param actionEvent
-     * @throws Exception
+     * @param actionEvent actionEvent
+     * @throws Exception exception error
      */
 
     public void onAppointments(ActionEvent actionEvent) throws Exception{
@@ -89,8 +89,8 @@ public class Menu implements Initializable {
 
     /**
      * Loads reports screen
-     * @param actionEvent
-     * @throws Exception
+     * @param actionEvent actionEvent
+     * @throws Exception exception error
      */
 
     public void onReports(ActionEvent actionEvent) throws Exception{
@@ -102,6 +102,10 @@ public class Menu implements Initializable {
     }
 
 
+    /**
+     * Exits the program
+     * @param actionEvent actionEvent
+     */
     public void onExit(ActionEvent actionEvent) {
         System.exit(0);
     }

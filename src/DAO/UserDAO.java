@@ -15,6 +15,10 @@ public class UserDAO {
     public static User currentUser = null;
     public static int userID = 0;
 
+    /**
+     * Get all user IDs from the database
+     * @return userIdList
+     */
 
     public static ObservableList<Integer> getUserID() {
         ObservableList<Integer> userIdList = FXCollections.observableArrayList();
@@ -33,7 +37,14 @@ public class UserDAO {
     }
 
 
-    public static boolean verifyUserLogin(String username, String pass) throws SQLException {
+    /**
+     * Uses the provided username to find the password from the database, then compare this value to provided password
+     * @param username username
+     * @param pass password
+     * @return boolean if password found from database and provided password are exact match or not
+     * @throws SQLException sql error
+     */
+    public static boolean verifyUserLogin(String username, String pass) {
         try {
             String sql = "SELECT * FROM users WHERE User_Name='" + username + "'";
             PreparedStatement ps = JDBC.connection.prepareStatement(sql);
