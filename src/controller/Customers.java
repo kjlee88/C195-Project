@@ -32,6 +32,12 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+/**
+ * Customer controller class.
+ * shows customers. provides add/update/delete user interfaces
+ * @author Kyung Jun Lee
+ */
+
 public class Customers implements Initializable {
     @FXML
     private Button edit;

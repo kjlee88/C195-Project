@@ -141,8 +141,8 @@ public class CustomerDAO {
             PreparedStatement ps = JDBC.connection.prepareStatement(q);
             ResultSet rs = ps.executeQuery(q);
             while (rs.next()) {
-                int customer_id = rs.getInt("Customer_Id");
-                customerIdList.add(customer_id);
+                int customerID = rs.getInt("Customer_ID");
+                customerIdList.add(customerID);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

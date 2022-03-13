@@ -36,7 +36,7 @@ public class TimeAndZone {
 
     public static String generateUTCTimestamp(String date, String time) throws ParseException {
         String timestamp = date + " " + time + ":00";
-        DateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        DateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date timestampLocal = dateFormatLocal.parse(timestamp);
         ZonedDateTime zoneTimeUTC = timestampLocal.toInstant().atZone(ZoneOffset.UTC);
         String timeUTC = zoneTimeUTC.toString();
@@ -47,10 +47,10 @@ public class TimeAndZone {
     }
 
     public static String convertToLocalTime(String timestamp) throws ParseException {
-        DateFormat dateFormatUTC = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        DateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        DateFormat dateFormatUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
-        dateFormatLocal.setTimeZone(TimeZone.getTimeZone(userZoneID));
+        //dateFormatLocal.setTimeZone(TimeZone.getTimeZone(userZoneID));
 
         Date timestampUTC = dateFormatUTC.parse(timestamp);
         String timeLocal = dateFormatLocal.format(timestampUTC);

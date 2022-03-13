@@ -27,7 +27,7 @@ public class User {
 
     /**
      * set User object's username
-     * @param username
+     * @param username username
      */
     public static void setUsername(String username) {
         User.username = username;

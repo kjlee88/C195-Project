@@ -17,8 +17,7 @@ import java.util.Date;
 
 
 /**
- *
- * Apppointment Data access object class
+ * Apppointment Data Access Object class
  * Any function that will interact with SQL will be found here
  */
 public class AppointmentDAO {
@@ -27,9 +26,14 @@ public class AppointmentDAO {
     /**
      * SQL script top pull appointment data
      * and saves it to variables that can be used to create Appointment class object
+     * Lambda expression #1
+     * Sorts the appointment List by comparing Appointment IDs
      * @return appointmentList
      */
     public static ObservableList getAllAppointments() {
+        // Sorting an ObservableList requires an anonymous inner class for the comparator used in the sort.
+        // Through the use of Lambda expression, I am able to bypass the anonymous inner class and achieve
+        // the same result with simple and functional semantics.
         ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
         try {
@@ -61,10 +65,7 @@ public class AppointmentDAO {
             ex.printStackTrace();
         }
 
-        /**
-         * Lambda expression #1
-         * Sorts the appointment List by comparing Appointment IDs
-         */
+
         Collections.sort(appointmentList, (a1, a2) -> a1.getAppointmentId()-a2.getAppointmentId());
         return appointmentList;
 
@@ -116,10 +117,14 @@ public class AppointmentDAO {
     /**
      * Creates time slots for appointment time
      * original time slots were written in UTC time, to reflect 8am-10pm EST business hour
+     * Lambda Expression: Although original code which used for loop was quite simple, I was able to substitute
+     * my for loop with lambda expression. Code is even shorter and simpler.
+     *
      * @return availableTimeList
      */
 
     public static ObservableList availableTime() {
+
         ObservableList<String> availableTimeList = FXCollections.observableArrayList();
 
         String[] timeList = {"13:00", "13:15", "13:30", "13:45", "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45", "16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45", "20:00", "20:15", "20:30", "20:45", "21:00", "21:15", "21:30", "21:45", "22:00", "22:15", "22:30", "22:45", "23:00", "23:15", "23:30", "23:45", "00:00", "00:15", "00:30", "00:45", "01:00", "01:15", "01:30", "01:45", "02:00", "02:15", "02:30", "02:45", "03:00"};
@@ -331,10 +336,12 @@ public class AppointmentDAO {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         java.util.Date newApptStartDateTime = sdf.parse(start);
         java.util.Date newApptEndDateTime = sdf.parse(end);
+
         boolean overlapCheck = false;
+        Boolean customerHasAppointment = false;
 
         try {
-            String SQL = "SELECT Appointment_ID, Start, End FROM appointments WHERE Customer_ID=" + customerID;
+            String SQL = "SELECT Appointment_ID, Start, End FROM appointments WHERE Customer_ID= " + customerID;
             PreparedStatement ps = JDBC.connection.prepareStatement(SQL);
             ResultSet rs = ps.executeQuery();
 
@@ -343,25 +350,30 @@ public class AppointmentDAO {
                 String startTime = rs.getString(2);
                 String endTime = rs.getString(3);
 
+                customerHasAppointment = true;
+
                 java.util.Date startDateTime = sdf.parse(startTime);
                 java.util.Date endDateTime = sdf.parse(endTime);
 
 
-                if ((newApptStartDateTime.before(endDateTime) && newApptStartDateTime.after(startDateTime))||(newApptEndDateTime.before(endDateTime) && newApptEndDateTime.after(startDateTime))) {
-                    overlapCheck = false;
+                if ((newApptStartDateTime.before(endDateTime) && newApptStartDateTime.after(startDateTime))||(newApptEndDateTime.before(endDateTime) && newApptEndDateTime.after(startDateTime))||(newApptStartDateTime.equals(startDateTime)||newApptEndDateTime.equals(endDateTime))) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("");
                     alert.setHeaderText("Customer has another overlapping appointment");
                     alert.setContentText("Review Appointment ID: " + appointmentID + " and adjust either/both start time and end time.");
                     alert.showAndWait();
+                    overlapCheck = false;
+                    break;
                 } else {
                     overlapCheck = true;
                 }
+            } if (!customerHasAppointment){
+                overlapCheck = true;
             }
         } catch (SQLException | ParseException ex) {
             ex.printStackTrace();
-        }
-        return overlapCheck;
+        } return overlapCheck;
+
     }
 
     /**
@@ -390,13 +402,12 @@ public class AppointmentDAO {
                 String appointmentId = rs.getString("Appointment_ID");
                 String startTime = rs.getString("Start");
 
-                DateFormat dateFormatUTC = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                dateFormatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String startTimeLocal = TimeAndZone.convertToLocalTime(startTime);
+                Date startTimeLocalDate = dateFormat.parse(startTimeLocal);
 
-                Date timestampLocal = dateFormatUTC.parse(startTime);
-
-                if (timestampLocal.before(alertTimeFormatted) && timestampLocal.after(currentTimeFormatted)) {
-                    alertList += "Appointment ID: " + appointmentId + "\t\tStart Time: " + startTime;
+                if (startTimeLocalDate.before(alertTimeFormatted) && startTimeLocalDate.after(currentTimeFormatted)) {
+                    alertList += "Appointment ID: " + appointmentId + "\t\tStart Time: " + startTimeLocal;
                 }
             }
         } catch (SQLException | ParseException ex) {

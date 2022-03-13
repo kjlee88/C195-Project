@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 
+/**
+ * Reports controller class.
+ * @author Kyung Jun Lee
+ */
 public class Reports {
     public TextArea textArea;
     public Button report1;

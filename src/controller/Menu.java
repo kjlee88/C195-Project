@@ -25,6 +25,11 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
+/**
+ * Menu controller class.
+ * User can select a function to perform. Initializes appointment alert screen.
+ * @author Kyung Jun Lee
+ */
 public class Menu implements Initializable {
 
     public Button reports;

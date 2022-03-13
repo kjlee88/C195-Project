@@ -27,8 +27,8 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 /**
- * FXML Controller class
- * shows appointments. provides add/update/delelete user interfaces
+ * Appointments controller class.
+ * shows appointments. provides add/update/delete user interfaces
  * @author Kyung Jun Lee
  */
 
@@ -265,6 +265,8 @@ public class Appointments implements Initializable {
             int customerID = customerIdComboBox.getValue();
             int userID = userIdComboBox.getValue();
 
+            System.out.println(customerID);
+
             String startTimeLocal = TimeAndZone.generateUTCTimestamp(startDate, startTime);
             String endTimeLocal = TimeAndZone.generateUTCTimestamp(endDate, endTime);
 
@@ -286,7 +288,7 @@ public class Appointments implements Initializable {
                 }
             }
         }
-    }
+   }
 
 
     /**
@@ -305,7 +307,9 @@ public class Appointments implements Initializable {
             alert.showAndWait();
         } else {
             requiredInputCheck = true;
-        } return requiredInputCheck;
+        } System.out.println("required Input check: " + requiredInputCheck);
+        requiredInputCheck = true;
+        return requiredInputCheck;
     }
 
     /**

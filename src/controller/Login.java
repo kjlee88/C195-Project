@@ -28,6 +28,10 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
 
+/**
+ * Login controller class.
+ * @author Kyung Jun Lee
+ */
 public class Login implements Initializable {
     @FXML
     private Label loginError;
@@ -123,8 +127,8 @@ public class Login implements Initializable {
         String username = usernameInput.getText();
         String pass = passwordInput.getText();
 
-        if (UserDAO.verifyUserLogin(username,pass)){
-            User currentUser = new User(getUserID(username),username);
+        if (UserDAO.verifyUserLogin(username, pass)) {
+            User currentUser = new User(getUserID(username), username);
             String attempt = "successful.";
             logger(username, attempt);
             Parent root = FXMLLoader.load(getClass().getResource("/view/menu.fxml"));
@@ -132,9 +136,13 @@ public class Login implements Initializable {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
-        }
+        } else {
+            User currentUser = new User(getUserID(username), username);
+            String attempt = "unsuccessful.";
+            logger(username, attempt);
             loginError.setText(rb.getString("loginerror"));
         }
+    }
 
 
     /**
